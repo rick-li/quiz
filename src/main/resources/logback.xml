@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- logback configuration file for reverse proxy -->
+<configuration>
+	<jmxConfigurator />
+	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+	<!-- *************************************************** -->
+	<!-- One of these environment sections should be -->
+	<!-- uncommented. Rest should be commented out. -->
+	<!-- *************************************************** -->
+
+	<!-- Local Env Property -->
+	<property resource="logback.properties" />
+	
+
+	<!-- *************************************************** -->
+	<!-- This section should remain constant across all -->
+	<!-- environments -->
+	<!-- *************************************************** -->
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${com.rick.logging.pattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- for mobile logs -->
+	<property name="com.citi.logging.pattern.mobile"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p %c:%L|%X{requestid}-%X{username}-%X{remoteip}-%X{sessionid}| - %m%n%ex" />
+	
+	<appender name="cvMobile_all" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${com.rick.logging.logsDir}/mobile/cvMobile_all.log</file>
+		<encoder>
+			<pattern>${com.rick.logging.pattern.mobile}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- hourly rollover -->
+			<fileNamePattern>${com.rick.logging.logsDir}/mobile/cvMobile_all.%d{yyyy-MM-dd_HH}.log
+			</fileNamePattern>
+			<!-- keep 10 days (240 hrs) worth of history -->
+			<maxHistory>240</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>DEBUG</level>
+   		</filter>
+	</appender>
+	
+	<appender name="cvMobile_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${com.citi.logging.logsDir}/mobile/cvMobile_error.log</file>
+		<encoder>
+			<pattern>${com.rick.logging.pattern.mobile}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- hourly rollover -->
+			<fileNamePattern>${com.rick.logging.logsDir}/mobile/cvMobile_error.%d{yyyy-MM-dd_HH}.log
+			</fileNamePattern>
+			<!-- keep 10 days (240 hrs) worth of history -->
+			<maxHistory>240</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	        <level>ERROR</level>
+   		</filter>
+	</appender>
+    
+	<logger name="com.rick" additivity="false" level="${com.rick.logging.level}">
+		<appender-ref ref="cvMobile_error"/>
+		<appender-ref ref="cvMobile_all"/>
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="org.apache" level="ERROR"></logger>
+	<logger name="org.spring" level="INFO"></logger>
+
+	<root level="DEBUG">
+	    <appender-ref ref="cvMobile_error"/>
+		<appender-ref ref="cvMobile_all"/>
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>
