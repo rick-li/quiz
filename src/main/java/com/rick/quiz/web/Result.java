@@ -1,6 +1,13 @@
 package com.rick.quiz.web;
 
 public class Result {
+	
+	public static Result Success(Object d){
+		Result r = new Result(Status.SUCCESS);
+		r.setResult(d);
+		return r;
+	}
+	
 	enum Status {
 		SUCCESS, FAIL
 	}
@@ -10,6 +17,10 @@ public class Result {
 	private Object result;
 
 	private String message;
+	
+	public Result(Status status){
+		this.status = status;
+	}
 	
 	public Status getStatus() {
 		return status;

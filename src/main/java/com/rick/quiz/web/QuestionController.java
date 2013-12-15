@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.rick.quiz.data.model.Question;
-import com.rick.quiz.data.repo.inner.QuestionInnerRepo;
-import com.rick.quiz.data.repo.inner.QuestionSetInnerRepo;
+import com.rick.quiz.data.repo.QuestionInnerRepo;
+import com.rick.quiz.data.repo.QuestionSetInnerRepo;
 import com.rick.quiz.web.Result.Status;
 
 @Controller
@@ -40,18 +40,17 @@ public class QuestionController {
 	@RequestMapping( method=RequestMethod.GET)
 	public String getQuestionsByQuestionSetId(@RequestParam("questionSetId") String qsId){
 		List<Question> questions = qr.findByQuestionSetId(qsId);
-		Result r = new Result();
-		r.setStatus(Status.SUCCESS);
+		Result r = new Result(Status.SUCCESS);
 		r.setResult(questions);
 		return gson.toJson(r);
 	}
 	
+	@Secured ("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public String getQuestion(@PathVariable("id") String id){
 		Question q = qr.findOne(id);
-		Result r = new Result();
-		r.setStatus(Status.SUCCESS);
+		Result r = new Result(Status.SUCCESS);
 		r.setResult(q);
 		String jsonR = gson.toJson(r);
 		log.debug(jsonR);
@@ -80,19 +79,17 @@ public class QuestionController {
 		q.setOptions(Arrays.asList(options.split(",")));
 		q.setQuestionSetId(questionSetId);
 		q = qr.save(q);
-		Result r = new Result();
-		r.setStatus(Status.SUCCESS);
+		Result r = new Result(Status.SUCCESS);
 		r.setResult(q.getId());
 		return gson.toJson(r);
 	}
-	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public String deleteQuestion(@PathVariable("id") String id){
 		Question q = qr.findOne(id);
 		qr.delete(q);
-		Result r = new Result();
-		r.setStatus(Status.SUCCESS);
+		Result r = new Result(Status.SUCCESS);
 		return gson.toJson(r);
 		
 	}

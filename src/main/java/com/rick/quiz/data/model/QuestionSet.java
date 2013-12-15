@@ -1,12 +1,7 @@
 package com.rick.quiz.data.model;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.google.common.collect.Lists;
 
 @Document(collection="question-set")
 public class QuestionSet {
@@ -16,9 +11,6 @@ public class QuestionSet {
 	String name;
 	
 	String desc;
-	
-	@DBRef
-	List<Question> questions = Lists.newArrayList();
 
 	public String getId() {
 		return id;
@@ -44,13 +36,4 @@ public class QuestionSet {
 		this.desc = desc;
 	}
 
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}
-	
-	
 }

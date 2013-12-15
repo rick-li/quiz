@@ -9,8 +9,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.common.collect.Lists;
 import com.rick.quiz.data.model.Question;
 import com.rick.quiz.data.model.QuestionSet;
-import com.rick.quiz.data.repo.inner.QuestionInnerRepo;
-import com.rick.quiz.data.repo.inner.QuestionSetInnerRepo;
+import com.rick.quiz.data.repo.QuestionInnerRepo;
+import com.rick.quiz.data.repo.QuestionSetInnerRepo;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,7 +39,7 @@ public class QuestionRepositoryTest {
 		QuestionSet qs = qsr.findOne("52a1b17630045478af28e727");
 		
 //		qs.getQuestions().add(qqq);
-		qs.getQuestions().add(q);
+//		qs.getQuestions().add(q);
 		qs = qsr.save(qs);
 	
 		System.out.println(qs);
