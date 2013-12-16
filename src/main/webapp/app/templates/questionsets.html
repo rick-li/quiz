@@ -11,6 +11,7 @@
 
                         <div class="collapse navbar-collapse">
                             <label for="">Question Set</label>
+                            <a href="" ng-click="new()"><i class="fa fa-plus"></i> 新增</a>
                         </div>
                     </div>
 
@@ -35,10 +36,11 @@
                                         <td>{{item.desc}}</td>
 
                                         <td>
-                                            <button type="button" class="btn btn-default" ng-click="viewDetail(item)"><i class="fa fa-pencil"></i>
-                                            </button>
+
                                             <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
                                             </button>
+
+
                                         </td>
                                     </tr>
 
@@ -51,7 +53,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4" ng-class="{glow:newItemCreated==true}">
             <form role="form" ng-submit="submit(selectedItem)">
                 <div class="form-group">
                     <label for="questionsetName">Name</label>
@@ -71,6 +73,7 @@
                         <button type='button' class="btn btn-default" ng-click="selectedItem={}">Add New</button>
                     </div>
                 </div>
+            </form>
         </div>
 
     </div>

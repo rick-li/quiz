@@ -22,7 +22,7 @@ app.constant('Status', {
 app.config(function($routeProvider) {
     $routeProvider
 
-    .when('/questions', {
+    .when('/questions/qsId/:qsId', {
         templateUrl: 'templates/questions.html',
         controller: 'QuestionCtrl'
     })

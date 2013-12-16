@@ -1,71 +1,113 @@
 <div class="row">
 
-    <div class="col-lg-12">
-        <div>
 
-            <ng-include src="'templates/detail.html'"></ng-include>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div>
+
+                <div class="panel panel-default">
 
 
-            <div class="panel panel-default">
+                    <div class="panel-heading">
 
+                        <div class="collapse navbar-collapse">
 
-                <div class="panel-heading">
+                            <label for="">Questions</label>
+                            <a href="" ng-click="new()"><i class="fa fa-plus"></i> 新增</a>
 
-                    <div class="collapse navbar-collapse">
-                        <ul class="nav nav-pills duo-header-nav navbar-right" ng-controller="CategoryCtrl">
-                            <li ng-class="{active:item.id == activeCategory.id}" ng-repeat="item in categories"><a ng-click="changeCate(item)">{{item.attributes.name}}</a>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-left">
-                            <li>
-                                <a href="#" ng-click="new();$event.preventDefault();"><i class="fa fa-plus"></i> 新增</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped tablesorter">
-                            <thead>
-                                <tr>
-                                    <th>Order <i class="fa fa-sort"></i>
-                                    </th>
-                                    <th>Category <i class="fa fa-sort"></i>
-                                    </th>
-                                    <th>Title <i class="fa fa-sort"></i>
-                                    </th>
-                                    <th>Intro<i class="fa fa-sort"></i>
-                                    </th>
-                                    <th>Status<i class="fa fa-sort"></i>
-                                    </th>
-                                    <th>Date <i class="fa fa-sort"></i>
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="item in articles | filter:item.status!='deleted'">
-                                    <td>{{item.attributes.order}}</td>
-                                    <td>{{item.get('category').get('name')}}</td>
-                                    <td>{{item.attributes.title}}</td>
-                                    <td>{{item.attributes.intro}}</td>
-                                    <td>{{item.attributes.status}}</td>
-                                    <td>{{item.updatedAt}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-default" ng-click="viewDetail(item)"><i class="fa fa-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.attributes.title}}？"><i class="fa fa-times"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+                        </div>
                     </div>
 
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped tablesorter">
+                                <thead>
+                                    <tr>
+
+                                        <th>Name <i class="fa fa-sort"></i>
+                                        </th>
+
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in questions" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
+                                        <td>{{item.name}}</td>
+
+
+                                        <td>
+
+                                            <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-default" ng-click="toQuestionList(item)"><i class="fa fa-arrow-circle-right"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="col-md-6">
+            <form role="form" ng-submit="submit(selectedItem)">
+                <div class="form-group">
+                    <label for="questionsetName">Name</label>
+                    <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="selectedItem.name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionsetName">Option</label>
+                    <input type="text" class="form-control" id="optionName" placeholder="" ng-model="selectedOption.name" required>
+                </div>
+                <div class="panel panel-default">
+
+
+                    <div class="panel-heading">
+
+                        <div class="collapse navbar-collapse">
+
+                            <label for="">Options</label>
+                            <a href="" ng-click="newOption()"><i class="fa fa-plus"></i> 新增</a>
+
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped tablesorter">
+
+                                <tbody>
+                                    <tr ng-repeat="option in selectedItem.options" ng-click="select(option)" ng-class="{success:selectedOption == option}">
+                                        <td>{{option}}</td>
+
+
+                                        <td>
+
+                                            <button type="button" class="btn btn-default" ng-click="delete(option)" ng-confirm-click="是否要删除{{option}}？"><i class="fa fa-times"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-default">Save/Update</button>
+                    </div>
+
+                </div>
+            </form>
         </div>
     </div>
 </div>

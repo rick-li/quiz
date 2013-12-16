@@ -258,7 +258,7 @@ app.constant('Status', {
 app.config(function($routeProvider) {
     $routeProvider
 
-    .when('/questions', {
+    .when('/questions/qsId/:qsId', {
         templateUrl: 'templates/questions.html',
         controller: 'QuestionCtrl'
     })
@@ -329,12 +329,12 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
     //     $scope.currentUser = null;
     //     $location.path('/login')
     // };
-});;app.controller('QuestionSetCtrl', function($scope, $resource, $log, Status, MaskService) {
+});;app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
     $log.log('init QuestionSetCtrl');
 
-
-    var QuestionSet = $resource('/mvc/questionsets/:userId', {
-        userId: '@id'
+    $scope.newItemCreated = false;
+    var QuestionSet = $resource('/mvc/questionsets/:id', {
+        id: '@id'
     }, {
         query: {
             isArray: false,
@@ -343,75 +343,96 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
     });
 
 
-    QuestionSet.query(function(data) {
-        $log.log('result is ', data)
-        $scope.questionsets = data.result;
-    });
+
+    $scope.query = function() {
+        QuestionSet.query(function(data) {
+            $log.log('result is ', data)
+            $scope.questionsets = data.result;
+        });
+    };
+    $scope.query();
 
 
     $scope.select = function(item) {
         $scope.selectedItem = item;
     };
-    $scope.submit = function(item) {
-        $log.log('submit question set.', item);
-        QuestionSet.save(item);
-    };
-});;app.controller('ContentCtrl', function($scope, $rootScope, $log, Parse, Status, MaskService, ArticleEvent) {
-    $log.log('ContentCtrl');
-
-    $scope.currentUser = Parse.User.current();
-    $log.log($scope.currentUser);
-
-    var refreshArticles = function(category) {
-        var query = new Parse.Query(Article);
-        query.descending("order");
-        if (category !== 'all') {
-            query.equalTo('category', category);
-        }
-
-        query.notEqualTo('status', Status.deleted);
-        query.include('category');
-        MaskService.start();
-        query.find().then(function(results) {
-            MaskService.stop();
-            $log.log('articles');
-            $log.log(results);
-            $scope.articles = results;
-            $scope.$apply();
-        });
-    };
-
-    $rootScope.$on('categoryChg', function(e, category, categories) {
-        $scope.categories = categories;
-        $log.log('category is ', category);
-        $scope.selectedCategory = category;
-        refreshArticles(category);
-    });
-
-    $rootScope.$on(ArticleEvent, function() {
-        refreshArticles($scope.selectedCategory);
-    });
 
     $scope.new = function() {
-        $log.log('new item');
-        var item = new Article();
-        $rootScope.$emit('viewDetail', item, $scope.categories);
-    };
-
-    $scope.viewDetail = function(item) {
-        $log.log('view detail', $scope.categories);
-        $rootScope.$emit('viewDetail', item, $scope.categories);
+        $scope.newItemCreated = true;
+        $timeout(function() {
+            $scope.newItemCreated = false;
+        }, 3000)
+        $scope.selectedItem = {};
     };
 
     $scope.delete = function(item) {
-        $log.log('Delete ', item.get('title'));
-        item.set('status', Status.deleted);
-        item.save({
-            'status': Status.deleted
-        }).then(function() {
-            refreshArticles($scope.selectedCategory);
+        QuestionSet.delete(item, function() {
+            $scope.query();
         });
     };
+    $scope.submit = function(item) {
+        $log.log('submit question set.', item);
+        QuestionSet.save(item, function() {
+            $scope.query();
+        });
+    };
+
+
+    $scope.toQuestionList = function(item) {
+
+        $location.path('/questions/qsId/' + item.id);
+    };
+});;app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
+    $log.log('QuestionCtrl ', $routeParams['qsId']);
+
+    $scope.newItemCreated = false;
+    var Question = $resource('/mvc/questions/:id?questionSetId=:qsId', {
+        id: '@id',
+        qsId: '@qsId'
+    }, {
+        query: {
+            isArray: false,
+            method: 'GET'
+        }
+    });
+
+
+
+    $scope.query = function() {
+        Question.query({
+            qsId: $routeParams['qsId']
+        }, function(data) {
+            $log.log('result is ', data)
+            $scope.questions = data.result;
+        });
+    };
+    $scope.query();
+
+
+    $scope.select = function(item) {
+        $scope.selectedItem = item;
+    };
+
+    $scope.new = function() {
+        $scope.newItemCreated = true;
+        $timeout(function() {
+            $scope.newItemCreated = false;
+        }, 3000)
+        $scope.selectedItem = {};
+    };
+
+    $scope.delete = function(item) {
+        Question.delete(item, function() {
+            $scope.query();
+        });
+    };
+    $scope.submit = function(item) {
+        $log.log('submit question set.', item);
+        Question.save(item, function() {
+            $scope.query();
+        });
+    };
+
 });;app.controller('EditCtrl', function($scope, $rootScope, $log, Parse, Status, ArticleEvent) {
     $log.log('EditCtrl');
     var defaultImageUrl = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";

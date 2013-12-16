@@ -49,7 +49,7 @@
  }
  .panel-heading a {
      position: absolute;
-     right: 15px;
+     right: 40px;
  }
  .form-signin {
      max-width: 330px;
@@ -113,4 +113,9 @@
  .new-account {
      display: block;
      margin-top: 10px;
+ }
+ .glow {
+     -webkit-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
+     -moz-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
+     box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
  }
