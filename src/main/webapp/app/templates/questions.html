@@ -40,8 +40,7 @@
 
                                             <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
                                             </button>
-                                            <button type="button" class="btn btn-default" ng-click="toQuestionList(item)"><i class="fa fa-arrow-circle-right"></i>
-                                            </button>
+
                                         </td>
                                     </tr>
 
@@ -61,8 +60,14 @@
                 </div>
 
                 <div class="form-group">
+
                     <label for="questionsetName">Option</label>
-                    <input type="text" class="form-control" id="optionName" placeholder="" ng-model="selectedOption.name" required>
+                    <div class="input-group">
+                        <input type="text" class="form-control " id="optionName" placeholder="" ng-model="selectedOption">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" ng-click="addOpt(selectedOption)">add</button>
+                        </span>
+                    </div>
                 </div>
                 <div class="panel panel-default">
 
@@ -82,13 +87,17 @@
                             <table class="table table-bordered table-hover table-striped tablesorter">
 
                                 <tbody>
-                                    <tr ng-repeat="option in selectedItem.options" ng-click="select(option)" ng-class="{success:selectedOption == option}">
+                                    <tr ng-repeat="option in selectedItem.options" ng-click="$parent.selectedOption = option" ng-class="{success:$parent.selectedOption === option}">
+                                        <td>
+                                            <input type="checkbox" ng-checked="isAnswer(option)" ng-click="selectAnswer($event, option)">
+                                        </td>
+
                                         <td>{{option}}</td>
 
 
                                         <td>
 
-                                            <button type="button" class="btn btn-default" ng-click="delete(option)" ng-confirm-click="是否要删除{{option}}？"><i class="fa fa-times"></i>
+                                            <button type=" button " class="btn btn-default " ng-click="deleteOpt(option) "><i class="fa fa-times "></i>
                                             </button>
 
                                         </td>
@@ -100,10 +109,10 @@
 
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group ">
 
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-default">Save/Update</button>
+                    <div class="col-sm-12 ">
+                        <button type="submit " class="btn btn-default ">Save/Update</button>
                     </div>
 
                 </div>

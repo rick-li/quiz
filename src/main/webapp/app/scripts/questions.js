@@ -1,7 +1,9 @@
 app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
     $log.log('QuestionCtrl ', $routeParams['qsId']);
+    $scope.qsId = $routeParams['qsId'];
 
     $scope.newItemCreated = false;
+
     var Question = $resource('/mvc/questions/:id?questionSetId=:qsId', {
         id: '@id',
         qsId: '@qsId'
@@ -12,14 +14,16 @@ app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
         }
     });
 
-
-
     $scope.query = function() {
         Question.query({
             qsId: $routeParams['qsId']
         }, function(data) {
             $log.log('result is ', data)
             $scope.questions = data.result;
+            $scope.selectedItem = {
+                options: [],
+                rightAnswer: []
+            };
         });
     };
     $scope.query();
@@ -37,13 +41,55 @@ app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
         $scope.selectedItem = {};
     };
 
+    $scope.selectAnswer = function(e, opt) {
+        if (e.target.checked) {
+            $scope.selectedItem.rightAnswer = [opt];
+        } else {
+            $scope.selectedItem.rightAnswer = [];
+        }
+
+    };
+    $scope.isAnswer = function(opt) {
+        if (!$scope.selectedItem.rightAnswer) {
+            return false;
+        }
+        return $scope.selectedItem.rightAnswer.indexOf(opt) != -1;
+    };
+
+    $scope.deleteOpt = function(opt) {
+        var opts = $scope.selectedItem.options;
+        opts.splice(opts.indexOf(opt), 1);
+    };
+
+    $scope.addOpt = function(opt) {
+        if (!$scope.selectedItem.options) {
+            $scope.selectedItem.options = [];
+            $scope.selectedItem.rightAnswer = [];
+        }
+        if ($scope.selectedItem.options.length >= 4) {
+            alert("不能大于4个");
+            return;
+        }
+        if ($scope.selectedItem.options.indexOf(opt) != -1) {
+            alert("不能重复");
+            return;
+        }
+        $scope.selectedItem.options.push(opt);
+        $scope.selectedOption = null;
+    };
+
     $scope.delete = function(item) {
         Question.delete(item, function() {
             $scope.query();
         });
     };
     $scope.submit = function(item) {
-        $log.log('submit question set.', item);
+        $log.log('submit question.', item);
+        if (!item.rightAnswer || item.rightAnswer.length <= 0) {
+            alert("必须选择答案");
+            return;
+        }
+        item.questionSetId = $scope.qsId;
         Question.save(item, function() {
             $scope.query();
         });
