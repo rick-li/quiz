@@ -1,9 +1,6 @@
 package com.rick.quiz.web;
 
-import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,27 +52,9 @@ public class QuestionController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public Result createOrUpdateQuestion(HttpServletRequest request){
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String options = request.getParameter("options");
-		String rightAwnsers = request.getParameter("rightAwnsers");
-		String questionSetId = request.getParameter("questionSetId");
-		Question q = null;
-		if(id!=null){
-			//try update
-			q = qr.findOne(id);
-		}else{
-			//create new
-			q = new Question();
-
-		}
-		q.setName(name);
-		q.setRightAnwser(Arrays.asList(rightAwnsers.split(",")));
-		q.setOptions(Arrays.asList(options.split(",")));
-		q.setQuestionSetId(questionSetId);
-		q = qr.save(q);
+	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	public Result createOrUpdateQuestion(@RequestBody Question pq){
+		Question q = qr.save(pq);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(q.getId());
 		return r;

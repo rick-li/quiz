@@ -1,8 +1,9 @@
-app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
+app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $routeParams) {
     $log.log('QuestionCtrl ', $routeParams['qsId']);
     $scope.qsId = $routeParams['qsId'];
 
     $scope.newItemCreated = false;
+    $scope.newOptionCreated = false;
 
     var Question = $resource('/mvc/questions/:id?questionSetId=:qsId', {
         id: '@id',
@@ -24,6 +25,7 @@ app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
                 options: [],
                 rightAnswer: []
             };
+            $scope.selectedOption = null;
         });
     };
     $scope.query();
@@ -39,6 +41,14 @@ app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
             $scope.newItemCreated = false;
         }, 3000)
         $scope.selectedItem = {};
+    };
+
+    $scope.newOption = function() {
+        $scope.newOptionCreated = true;
+        $timeout(function() {
+            $scope.newOptionCreated = false;
+        }, 3000)
+        $scope.selectedOption = null;
     };
 
     $scope.selectAnswer = function(e, opt) {

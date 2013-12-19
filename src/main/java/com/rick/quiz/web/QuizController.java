@@ -1,15 +1,17 @@
 package com.rick.quiz.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.rick.quiz.data.model.Quiz;
 import com.rick.quiz.data.repo.QuizRepo;
@@ -24,32 +26,40 @@ public class QuizController {
 	
 	Gson gson = new Gson();
 	
-	@Secured("ROLE_ADMIN")
+	@ResponseBody
+	@RequestMapping(value="", method=RequestMethod.GET)
+	public Result getQuestionSet(){
+		List<Quiz> quizList = Lists.newArrayList(quizRepo.findAll());
+		Result r = new Result(Status.SUCCESS);
+		r.setResult(quizList);
+		return r;
+	}
+//	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public String getQuestionSet(@PathVariable("id") String id){
+	public Result getQuestionSet(@PathVariable("id") String id){
 		Quiz quiz = quizRepo.findOne(id);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(quiz);
-		return gson.toJson(r);
+		return r;
 	}
 	
-	@Secured("ROLE_ADMIN")
+//	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public String deleteQuestionSet(@PathVariable("id") String id){
+	public Result deleteQuestionSet(@PathVariable("id") String id){
 		Quiz quiz = quizRepo.findOne(id);
 		if(quiz != null){
 			quizRepo.delete(quiz);
 		}
 		Result r = new Result(Status.SUCCESS);
-		return gson.toJson(r);
+		return r;
 	}
 	
-	@Secured("ROLE_ADMIN")
+//	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/", method=RequestMethod.POST)
-	public String createOrUpdateQuiz(HttpServletRequest request){
+	public Result createOrUpdateQuiz(HttpServletRequest request){
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String intro = request.getParameter("introduction");
@@ -67,6 +77,6 @@ public class QuizController {
 		quiz.setQuestionNum(questionNum);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(quiz.getId());
-		return gson.toJson(r);
+		return r;
 	}
 }

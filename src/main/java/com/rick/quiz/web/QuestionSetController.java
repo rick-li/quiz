@@ -62,7 +62,7 @@ public class QuestionSetController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="", method=RequestMethod.POST)
+	@RequestMapping(value="/{id}", method=RequestMethod.POST)
 	public Result createOrUpdateQuestionSet(@RequestBody QuestionSet qs){
 		
 		qs = qsr.save(qs);

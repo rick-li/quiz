@@ -30,8 +30,12 @@ app.config(function($routeProvider) {
             templateUrl: 'templates/questionsets.html',
             controller: 'QuestionSetCtrl'
         })
+        .when('/quizs', {
+            templateUrl: 'templates/quiz.html',
+            controller: 'QuizCtrl'
+        })
         .otherwise({
-            redirectTo: '/questionsets'
+            redirectTo: '/quizs'
         });
 });
 

@@ -12,7 +12,7 @@ public class Question {
 
 	String name;
 
-	List<String> rightAnwser;
+	List<String> rightAnswer;
 
 	List<String> options;
 
@@ -34,13 +34,6 @@ public class Question {
 		this.name = name;
 	}
 
-	public List<String> getRightAnwser() {
-		return rightAnwser;
-	}
-
-	public void setRightAnwser(List<String> rightAnwser) {
-		this.rightAnwser = rightAnwser;
-	}
 
 	public List<String> getOptions() {
 		return options;
@@ -56,6 +49,14 @@ public class Question {
 
 	public void setQuestionSetId(String questionSetId) {
 		this.questionSetId = questionSetId;
+	}
+
+	public List<String> getRightAnswer() {
+		return rightAnswer;
+	}
+
+	public void setRightAnswer(List<String> rightAnswer) {
+		this.rightAnswer = rightAnswer;
 	}
 
 	

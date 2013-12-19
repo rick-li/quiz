@@ -51,7 +51,7 @@ public class QuestionRepositoryTest {
 		Question q = new Question();
 		q.setName("question q2222222");
 		q.setOptions(Lists.newArrayList("option 1", "option 2", "option 3"));
-		q.setRightAnwser(Lists.newArrayList("option 2"));
+		q.setRightAnswer(Lists.newArrayList("option 2"));
 		q.setQuestionSetId("52a1b2bd30040d5400bc3ce5");
 		
 		qr.save(q);

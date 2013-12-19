@@ -12,7 +12,7 @@
 
                         <div class="collapse navbar-collapse">
 
-                            <label for="">Questions</label>
+                            <label for="">QS {{}}</label>
                             <a href="" ng-click="new()"><i class="fa fa-plus"></i> 新增</a>
 
                         </div>
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" ng-class="{glow:newItemCreated==true}">
             <form role="form" ng-submit="submit(selectedItem)">
                 <div class="form-group">
                     <label for="questionsetName">Name</label>
@@ -63,7 +63,7 @@
 
                     <label for="questionsetName">Option</label>
                     <div class="input-group">
-                        <input type="text" class="form-control " id="optionName" placeholder="" ng-model="selectedOption">
+                        <input type="text" class="form-control" id="optionName" placeholder="" ng-model="selectedOption" ng-class="{glow:newOptionCreated==true}">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" ng-click="addOpt(selectedOption)">add</button>
                         </span>

@@ -31,7 +31,7 @@
 	<appender name="cvMobile_all" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${com.rick.logging.logsDir}/mobile/cvMobile_all.log</file>
 		<encoder>
-			<pattern>${com.rick.logging.pattern.mobile}</pattern>
+			<pattern>${com.rick.logging.pattern}</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- hourly rollover -->
@@ -46,9 +46,9 @@
 	</appender>
 	
 	<appender name="cvMobile_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${com.citi.logging.logsDir}/mobile/cvMobile_error.log</file>
+		<file>${com.rick.logging.logsDir}/mobile/cvMobile_error.log</file>
 		<encoder>
-			<pattern>${com.rick.logging.pattern.mobile}</pattern>
+			<pattern>${com.rick.logging.pattern}</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- hourly rollover -->

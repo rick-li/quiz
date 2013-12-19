@@ -266,8 +266,12 @@ app.config(function($routeProvider) {
             templateUrl: 'templates/questionsets.html',
             controller: 'QuestionSetCtrl'
         })
+        .when('/quizs', {
+            templateUrl: 'templates/quiz.html',
+            controller: 'QuizCtrl'
+        })
         .otherwise({
-            redirectTo: '/questionsets'
+            redirectTo: '/quizs'
         });
 });
 
@@ -382,11 +386,12 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
 
         $location.path('/questions/qsId/' + item.id);
     };
-});;app.controller('QuestionCtrl', function($scope, $log, $resource, $routeParams) {
+});;app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $routeParams) {
     $log.log('QuestionCtrl ', $routeParams['qsId']);
     $scope.qsId = $routeParams['qsId'];
 
     $scope.newItemCreated = false;
+    $scope.newOptionCreated = false;
 
     var Question = $resource('/mvc/questions/:id?questionSetId=:qsId', {
         id: '@id',
@@ -408,6 +413,7 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
                 options: [],
                 rightAnswer: []
             };
+            $scope.selectedOption = null;
         });
     };
     $scope.query();
@@ -423,6 +429,14 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
             $scope.newItemCreated = false;
         }, 3000)
         $scope.selectedItem = {};
+    };
+
+    $scope.newOption = function() {
+        $scope.newOptionCreated = true;
+        $timeout(function() {
+            $scope.newOptionCreated = false;
+        }, 3000)
+        $scope.selectedOption = null;
     };
 
     $scope.selectAnswer = function(e, opt) {
@@ -546,4 +560,54 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
             $scope.currentImageUrl = $scope.currentImage.url();
         }
     });
-});;
+});;;app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
+    $log.log('init QuizCtrl');
+
+    $('textarea#quizEditor').ckeditor();
+
+    $scope.newItemCreated = false;
+    var Quiz = $resource('/mvc/quiz/:id', {
+        id: '@id'
+    }, {
+        query: {
+            isArray: false,
+            method: 'GET'
+        }
+    });
+
+
+
+    $scope.query = function() {
+        Quiz.query(function(data) {
+            $log.log('result is ', data)
+            $scope.quizs = data.result;
+        });
+    };
+    $scope.query();
+
+
+    $scope.select = function(item) {
+        $scope.selectedItem = item;
+    };
+
+    $scope.new = function() {
+        $scope.newItemCreated = true;
+        $timeout(function() {
+            $scope.newItemCreated = false;
+        }, 3000)
+        $scope.selectedItem = {};
+    };
+
+    $scope.delete = function(item) {
+        Quiz.delete(item, function() {
+            $scope.query();
+        });
+    };
+    $scope.submit = function(item) {
+        $log.log('submit quiz.', item);
+        Quiz.save(item, function() {
+            $scope.query();
+        });
+    };
+
+});

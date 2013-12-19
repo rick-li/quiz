@@ -23,45 +23,45 @@ import com.rick.quiz.web.Result.Status;
 @RequestMapping("/formfieldtype")
 public class FormFieldTypeController {
 	private Logger log = LoggerFactory.getLogger(FormFieldTypeController.class);
-	
-	private Gson gson = new Gson();
-	
+		
 	@Autowired
 	private FormFieldTypeRepo repo;
 	
 	@ResponseBody
 	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String getFormFieldTypes(){
+	public Result getFormFieldTypes(){
 		List<FormFieldType> types = Lists.newArrayList(repo.findAll());
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(types);
-		return gson.toJson(r);
+		return r;
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public String getFormFieldType(@PathVariable("id") String id){
+	public Result getFormFieldType(@PathVariable("id") String id){
 		FormFieldType type = repo.findOne(id);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(type);
-		return gson.toJson(r);
+		return r;
+//		return gson.toJson(r);
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public String deleteQuestionSet(@PathVariable("id") String id){
+	public Result deleteQuestionSet(@PathVariable("id") String id){
 		FormFieldType type = repo.findOne(id);
 		if(type != null){
 			repo.delete(type);
 		}
 		Result r = new Result(Status.SUCCESS);
-		return gson.toJson(r);
+		return r;
+//		return gson.toJson(r);
 	}
 	
 	
 	@ResponseBody
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public String createOrUpdateFormFieldType(HttpServletRequest request){
+	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	public Result createOrUpdateFormFieldType(HttpServletRequest request){
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		FormFieldType type = null;
@@ -76,7 +76,8 @@ public class FormFieldTypeController {
 		repo.save(type);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(type.getId());
-		return gson.toJson(r);
+		return r;
+//		return gson.toJson(r);
 	}
 
 }
