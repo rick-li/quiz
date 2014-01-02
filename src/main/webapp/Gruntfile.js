@@ -106,6 +106,8 @@ module.exports = function(grunt) {
                     'app/scripts/detail.js',
                     'app/scripts/login.js',
                     'app/scripts/quiz.js',
+                    'app/scripts/quiz-editor.js',
+                    'app/scripts/form-field-types.js'
                     //place your JavaScript files here
                 ]
             },

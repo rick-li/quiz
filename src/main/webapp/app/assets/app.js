@@ -250,11 +250,7 @@ app.constant('Status', {
 });
 
 
-// app.config(function($httpProvider) {
-//     $httpProvider.defaults.headers.post = {
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//     };
-// });
+
 app.config(function($routeProvider) {
     $routeProvider
 
@@ -270,9 +266,56 @@ app.config(function($routeProvider) {
             templateUrl: 'templates/quiz.html',
             controller: 'QuizCtrl'
         })
+        .when('/quiz/:quizId', {
+            templateUrl: 'templates/quiz-editor.html',
+            controller: 'QuizEditor'
+        })
+        .when('/fieldtypes', {
+            templateUrl: 'templates/form-field-types.html',
+            controller: 'FormTypeCtrl'
+        })
         .otherwise({
             redirectTo: '/quizs'
         });
+});
+
+app.directive('ckeditor', function($log) {
+    return {
+        restrict: 'E',
+        scope: {
+            content: '='
+        },
+        link: function(scope, elm, attr) {
+            $log.log('attr is ', attr);
+
+            var ck = CKEDITOR.replace(elm[0], {
+                height: '350px'
+            });
+            var contentUnWatcher = scope.$watch('content', function(newContent) {
+                $log.log('content changed, ', newContent);
+                if (newContent) {
+                    ck.setData(newContent);
+                    contentUnWatcher();
+                }
+            })
+
+
+            ck.on('instanceReady', function() {
+                ck.setData(scope.content);
+            });
+
+            function updateModel() {
+                scope.$apply(function() {
+                    scope.content = ck.getData();
+                });
+            }
+
+            ck.on('change', updateModel);
+            ck.on('key', updateModel);
+            ck.on('dataReady', updateModel);
+
+        }
+    };
 });
 
 app.controller('BodyCtrl', function($scope, $rootScope, MaskEvent, $log) {
@@ -333,10 +376,7 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
     //     $scope.currentUser = null;
     //     $location.path('/login')
     // };
-});;app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
-    $log.log('init QuestionSetCtrl');
-
-    $scope.newItemCreated = false;
+});;app.service('QuestionSetService', function($log, $resource) {
     var QuestionSet = $resource('/mvc/questionsets/:id', {
         id: '@id'
     }, {
@@ -346,10 +386,19 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
         }
     });
 
+    return QuestionSet;
+})
+
+app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $location, QuestionSetService, Status, MaskService) {
+    $log.log('init QuestionSetCtrl');
+
+    $scope.newItemCreated = false;
+
+
 
 
     $scope.query = function() {
-        QuestionSet.query(function(data) {
+        QuestionSetService.query(function(data) {
             $log.log('result is ', data)
             $scope.questionsets = data.result;
         });
@@ -560,12 +609,7 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
             $scope.currentImageUrl = $scope.currentImage.url();
         }
     });
-});;;app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
-    $log.log('init QuizCtrl');
-
-    $('textarea#quizEditor').ckeditor();
-
-    $scope.newItemCreated = false;
+});;;app.service('QuizService', function($rootScope, $log, $resource) {
     var Quiz = $resource('/mvc/quiz/:id', {
         id: '@id'
     }, {
@@ -575,10 +619,18 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
         }
     });
 
+    return Quiz;
+})
+
+app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location, QuizService, Status, MaskService) {
+    $log.log('init QuizCtrl');
+
+    $scope.newItemCreated = false;
+
 
 
     $scope.query = function() {
-        Quiz.query(function(data) {
+        QuizService.query(function(data) {
             $log.log('result is ', data)
             $scope.quizs = data.result;
         });
@@ -598,15 +650,176 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
         $scope.selectedItem = {};
     };
 
-    $scope.delete = function(item) {
-        Quiz.delete(item, function() {
-            $scope.query();
+    $scope.edit = function(item) {
+
+    }
+
+});;app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $timeout, $location, QuestionSetService, QuizService, FormTypeService, Status, MaskService) {
+    $log.log('quiz editor');
+    $scope.selectedFormField = {};
+    $scope.chosenFieldType = {};
+    $scope.selectedQuestionSet = {};
+    $scope.remainQuestionSets = [];
+    $scope.remainFormFields = [];
+    var query = function() {
+        QuizService.get({
+            id: quizId
+        }, function(data) {
+            $scope.quiz = data.result;
+            calculateRemainFormFields();
         });
     };
+
+    var quizId = $routeParams.quizId;
+    if (quizId && quizId != 'new') {
+        query();
+    } else {
+        //new quiz;
+        $scope.quiz = {};
+    }
+
+
+
+    var calculateRemainFormFields = function() {
+        if (!$scope.quiz || !$scope.fieldTypes) {
+            return;
+        }
+        $scope.remainFormFields = $scope.fieldTypes.slice();
+        angular.forEach($scope.quiz.formFields, function(formField) {
+            var idx = $scope.remainFormFields.indexOf(formField);
+            if (idx != -1) {
+                $scope.remainFormFields.splice(idx, 1);
+            }
+        });
+    };
+
+    var calculateRemainQuestionSets = function() {
+        if (!$scope.quiz || !$scope.questionSets) {
+            return;
+        }
+
+        $scope.remainQuestionSets = $scope.questionSets.slice();
+        angular.forEach($scope.quiz.questionSets, function(questionSetAssc) {
+            var idx = $scope.remainQuestionSets.indexOf(questionSetAssc.qs);
+            if (idx != -1) {
+                $scope.remainQuestionSets.splice(idx, 1);
+            }
+        });
+    }
+
+    QuestionSetService.query(function(data) {
+        $scope.questionSets = data.result;
+        calculateRemainQuestionSets();
+    });
+
+    FormTypeService.query(function(data) {
+        $scope.fieldTypes = data.result;
+
+        calculateRemainFormFields();
+    });
+
+    $scope.addFormField = function(item) {
+
+        $scope.quiz.formFields || ($scope.quiz.formFields = []);
+        if ($scope.quiz.formFields.indexOf(item) == -1) {
+            $scope.quiz.formFields.push(item);
+        }
+        calculateRemainFormFields();
+    };
+
+
+    $scope.setSelectedFormField = function(item) {
+        $scope.selectedFormField = item;
+    };
+
+    $scope.deleteFormField = function(item) {
+        var fields = $scope.quiz.formFields;
+        if (!fields) {
+            return;
+        }
+        var idx = fields.indexOf(item);
+        if (idx != -1) {
+            fields.splice(idx, 1);
+        }
+        calculateRemainFormFields();
+    };
+    var searchQs = function(item) {
+        var idx = -1;
+        angular.forEach($scope.quiz.questionSets, function(qset) {
+            if (qset && qset.qs) {
+                if (qset.qs.id === item.id) {
+                    return idx;
+                }
+                idx++;
+            }
+        });
+        return -1;
+    }
+
+    $scope.setSelectedQuestionSet = function(item) {
+        $scope.selectedQuestionSet = item;
+    };
+
+    $scope.addQuestionSet = function(item) {
+        $scope.quiz.questionSets || ($scope.quiz.questionSets = []);
+        if (searchQs(item.qs) == -1) {
+            $scope.quiz.questionSets.push(item);
+        }
+        $scope.selectedQuestionSet = {};
+        calculateRemainQuestionSets();
+    };
+
+    $scope.deleteQuestionSet = function(item) {
+        var qsets = $scope.quiz.questionSets;
+        if (!qsets) {
+            return;
+        }
+
+        var idx = qsets.indexOf(item);
+        if (idx != -1) {
+            qsets.splice(idx, 1);
+        }
+        calculateRemainQuestionSets();
+    };
+
     $scope.submit = function(item) {
         $log.log('submit quiz.', item);
-        Quiz.save(item, function() {
-            $scope.query();
+        QuizService.save(item, function() {
+            query();
+        });
+    };
+});;app.service('FormTypeService', function($resource, $log) {
+    var FieldType = $resource('/mvc/formfieldtype/:id', {
+        id: '@id'
+    }, {
+        query: {
+            isArray: false,
+            method: 'GET'
+        }
+    });
+
+    return FieldType;
+});
+
+app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService) {
+
+    var query = function() {
+        FormTypeService.query(function(data) {
+            $scope.fieldTypes = data.result;
+        });
+    };
+
+    query();
+
+    $scope.submit = function(item) {
+        FormTypeService.save(item, function() {
+            query();
+        });
+    };
+
+    $scope.delete = function(item) {
+        FormTypeService.delete(item, function() {
+            query();
         });
     };
 

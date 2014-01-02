@@ -1,0 +1,68 @@
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="col-md-8">
+            <div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        <div class="collapse navbar-collapse">
+                            <label for="">Form Fields</label>
+
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped tablesorter">
+                                <thead>
+                                    <tr>
+                                        <th>Name <i class="fa fa-sort"></i>
+                                        </th>
+
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="item in quiz.formFields" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
+                                        <td>{{item.name}}</td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-default" ng-click="deleteFormField(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
+                                            </button>
+
+
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4" ng-class="{glow:newItemCreated==true}">
+            <form role="form" ng-submit="submit(selectedItem)">
+                <div class="form-group">
+                    <label for="fieldTypeName">Name</label>
+                    <input type="text" class="form-control" id="fieldTypeName" placeholder="" ng-model="selectedItem.name" required>
+                </div>
+
+                <div class="form-group">
+
+                    <div class="col-sm-6">
+                        <button type="submit" class="btn btn-default">Save/Update</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type='button' class="btn btn-default" ng-click="selectedItem={}">Add New</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

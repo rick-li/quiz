@@ -1,9 +1,4 @@
-app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
-    $log.log('init QuizCtrl');
-
-    $('textarea#quizEditor').ckeditor();
-
-    $scope.newItemCreated = false;
+app.service('QuizService', function($rootScope, $log, $resource) {
     var Quiz = $resource('/mvc/quiz/:id', {
         id: '@id'
     }, {
@@ -13,10 +8,18 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         }
     });
 
+    return Quiz;
+})
+
+app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location, QuizService, Status, MaskService) {
+    $log.log('init QuizCtrl');
+
+    $scope.newItemCreated = false;
+
 
 
     $scope.query = function() {
-        Quiz.query(function(data) {
+        QuizService.query(function(data) {
             $log.log('result is ', data)
             $scope.quizs = data.result;
         });
@@ -36,16 +39,8 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $scope.selectedItem = {};
     };
 
-    $scope.delete = function(item) {
-        Quiz.delete(item, function() {
-            $scope.query();
-        });
-    };
-    $scope.submit = function(item) {
-        $log.log('submit quiz.', item);
-        Quiz.save(item, function() {
-            $scope.query();
-        });
-    };
+    $scope.edit = function(item) {
+
+    }
 
 });

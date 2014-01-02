@@ -1,7 +1,4 @@
-app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $location, Status, MaskService) {
-    $log.log('init QuestionSetCtrl');
-
-    $scope.newItemCreated = false;
+app.service('QuestionSetService', function($log, $resource) {
     var QuestionSet = $resource('/mvc/questionsets/:id', {
         id: '@id'
     }, {
@@ -11,10 +8,19 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
         }
     });
 
+    return QuestionSet;
+})
+
+app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $location, QuestionSetService, Status, MaskService) {
+    $log.log('init QuestionSetCtrl');
+
+    $scope.newItemCreated = false;
+
+
 
 
     $scope.query = function() {
-        QuestionSet.query(function(data) {
+        QuestionSetService.query(function(data) {
             $log.log('result is ', data)
             $scope.questionsets = data.result;
         });

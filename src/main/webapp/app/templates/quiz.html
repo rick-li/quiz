@@ -2,178 +2,59 @@
 
 
     <div class="col-md-12">
-        <div class="col-md-6">
-            <div>
 
-                <div class="panel panel-default">
+        <div>
 
-
-                    <div class="panel-heading">
-
-                        <div class="collapse navbar-collapse">
-
-                            <label for="">Quiz</label>
-                            <a href="" ng-click="new()"><i class="fa fa-plus"></i> 新增</a>
-
-                        </div>
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped tablesorter">
-                                <thead>
-                                    <tr>
-
-                                        <th>Name <i class="fa fa-sort"></i>
-                                        </th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr ng-repeat="item in quizs" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
-                                        <td>{{item.name}}</td>
+            <div class="panel panel-default">
 
 
-                                        <td>
+                <div class="panel-heading">
 
-                                            <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
-                                            </button>
+                    <div class="collapse navbar-collapse">
 
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
+                        <label for="">Quiz</label>
+                        <a href="" ng-click="new()"><i class="fa fa-plus"></i> 新增</a>
 
                     </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped tablesorter">
+                            <thead>
+                                <tr>
+
+                                    <th>Name <i class="fa fa-sort"></i>
+                                    </th>
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr ng-repeat="item in quizs" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
+                                    <td>{{item.name}}</td>
+
+
+                                    <td>
+
+                                        <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-default" ng-click="editQuiz(item)"><i class="fa fa-arrow-circle-right"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <div class="col-md-6" ng-class="{glow:newItemCreated==true}">
-            <form role="form" ng-submit="submit(selectedItem)">
-                <div class="form-group">
-                    <label for="questionsetName">Name</label>
-                    <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="selectedItem.name" required>
-
-                    <div class="form-group">
-                        <label for="quizEditor">Description</label>
-                        <textarea id="quizEditor" class="form-control" rows="3" ng-model="selectedItem.desc" required></textarea>
-
-                    </div>
-                </div>
-
-                <div class="form-group">
-
-                    <label for="questionsetName">FormElement</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="optionName" placeholder="" ng-model="selectedOption" ng-class="{glow:newOptionCreated==true}">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" ng-click="addOpt(selectedOption)">add</button>
-                        </span>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-
-
-                    <div class="panel-heading">
-
-                        <div class="collapse navbar-collapse">
-
-                            <label for="">Form Elements</label>
-                            <a href="" ng-click="newOption()"><i class="fa fa-plus"></i> 新增</a>
-
-                        </div>
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped tablesorter">
-
-                                <tbody>
-                                    <tr ng-repeat="option in selectedItem.options" ng-click="$parent.selectedOption = option" ng-class="{success:$parent.selectedOption === option}">
-                                        <td>
-                                            <input type="checkbox" ng-checked="isAnswer(option)" ng-click="selectAnswer($event, option)">
-                                        </td>
-
-                                        <td>{{option}}</td>
-
-
-                                        <td>
-
-                                            <button type=" button " class="btn btn-default " ng-click="deleteOpt(option) "><i class="fa fa-times "></i>
-                                            </button>
-
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- question sets -->
-                <div class="form-group">
-
-                    <label for="">QuestionSets</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="questionSet" placeholder="" ng-model="selectedOption">
-                        <input type="text" class="form-control" id="optionName" placeholder="" ng-model="selectedOption">
-                    </div>
-                </div>
-                <div class="panel panel-default">
-
-
-                    <div class="panel-heading">
-
-                        <div class="collapse navbar-collapse">
-
-                            <label for="">QuestionSets</label>
-                            <a href="" ng-click="newQuestionSet()"><i class="fa fa-plus"></i> 新增</a>
-
-                        </div>
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped tablesorter">
-
-                                <tbody>
-                                    <tr ng-repeat="questionSet in selectedItem.questionSets" ng-click="$parent.selectedQuestionSet = option" ng-class="{success:$parent.selectedQuestionSet === option}">
-                                        <td>{{questionSet.percentage}}</td>
-
-                                        <td>{{questionSet.name}}</td>
-
-
-                                        <td>
-
-                                            <button type=" button " class="btn btn-default " ng-click="deleteQuestionSet(questionSet) "><i class="fa fa-times "></i>
-                                            </button>
-
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
 
 
 
-                <div class="form-group ">
-
-                    <div class="col-sm-12 ">
-                        <button type="submit " class="btn btn-default ">Save/Update</button>
-                    </div>
-
-                </div>
-            </form>
-        </div>
     </div>
 </div>

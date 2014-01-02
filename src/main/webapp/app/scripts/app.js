@@ -14,11 +14,7 @@ app.constant('Status', {
 });
 
 
-// app.config(function($httpProvider) {
-//     $httpProvider.defaults.headers.post = {
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//     };
-// });
+
 app.config(function($routeProvider) {
     $routeProvider
 
@@ -34,9 +30,56 @@ app.config(function($routeProvider) {
             templateUrl: 'templates/quiz.html',
             controller: 'QuizCtrl'
         })
+        .when('/quiz/:quizId', {
+            templateUrl: 'templates/quiz-editor.html',
+            controller: 'QuizEditor'
+        })
+        .when('/fieldtypes', {
+            templateUrl: 'templates/form-field-types.html',
+            controller: 'FormTypeCtrl'
+        })
         .otherwise({
             redirectTo: '/quizs'
         });
+});
+
+app.directive('ckeditor', function($log) {
+    return {
+        restrict: 'E',
+        scope: {
+            content: '='
+        },
+        link: function(scope, elm, attr) {
+            $log.log('attr is ', attr);
+
+            var ck = CKEDITOR.replace(elm[0], {
+                height: '350px'
+            });
+            var contentUnWatcher = scope.$watch('content', function(newContent) {
+                $log.log('content changed, ', newContent);
+                if (newContent) {
+                    ck.setData(newContent);
+                    contentUnWatcher();
+                }
+            })
+
+
+            ck.on('instanceReady', function() {
+                ck.setData(scope.content);
+            });
+
+            function updateModel() {
+                scope.$apply(function() {
+                    scope.content = ck.getData();
+                });
+            }
+
+            ck.on('change', updateModel);
+            ck.on('key', updateModel);
+            ck.on('dataReady', updateModel);
+
+        }
+    };
 });
 
 app.controller('BodyCtrl', function($scope, $rootScope, MaskEvent, $log) {

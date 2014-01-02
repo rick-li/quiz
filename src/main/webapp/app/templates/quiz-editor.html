@@ -1,0 +1,141 @@
+<div class="row">
+    <div class="col-md-12">
+        <form role="form" ng-submit="submit(quiz)">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="questionsetName">Name:</label>
+                        <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="quiz.name" required>
+
+                    </div>
+                    <div class="form-group">
+                        <label>Question number:</label>
+                        <input type="number" ng-model="quiz.questionNum">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizEditor">Introduction:</label>
+                        <ckeditor content="quiz.introduction"></ckeditor>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="form-group">
+
+                        <label for="questionsetName">FormElement</label>
+                        <div class="input-group">
+                            <select ng-model="chosenFieldType" ng-options="f.name for f in remainFormFields"></select>
+
+                            <button class="btn btn-default" type="button" ng-click="addFormField(chosenFieldType)">add</button>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="collapse navbar-collapse">
+
+                                <label for="">Form Fields</label>
+                                <a href="" ng-click="addFormField(selectedFormField)"><i class="fa fa-plus"></i> 新增</a>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped tablesorter">
+
+                                    <tbody>
+                                        <tr ng-repeat="item in quiz.formFields" ng-click="setSelectedFormField(item)" ng-class="{success:selectedFormField === item}">
+
+                                            <td>{{item.name}}</td>
+
+                                            <td>
+
+                                                <button type=" button " class="btn btn-default " ng-click="deleteFormField(item) "><i class="fa fa-times "></i>
+                                                </button>
+
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- question sets -->
+                    <div class="form-group">
+                        <label for="">QuestionSets</label>
+                        <select ng-model="selectedQuestionSet.qs" ng-options="qs.name for qs in remainQuestionSets"></select>
+
+
+                    </div>
+                    <div class="form-group">
+
+                        <label for="">Percentage</label>
+
+
+                        <input type="number" id="questionSetPercentage" placeholder="" required ng-model="selectedQuestionSet.percentage">
+
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default" type="button" ng-click="addQuestionSet(selectedQuestionSet)">save</button>
+                    </div>
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading">
+
+                            <div class="collapse navbar-collapse">
+
+                                <label for="">QuestionSets</label>
+                                <a href="" ng-click="selectedQuestionSet = {}"><i class="fa fa-plus"></i> 新增</a>
+
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped tablesorter">
+
+                                    <tbody>
+                                        <tr ng-repeat="item in quiz.questionSets" ng-click="setSelectedQuestionSet(item)" ng-class="{success:selectedQuestionSet === item}">
+                                            <td>{{item.qs.name}}</td>
+                                            <td>{{item.percentage}}</td>
+
+                                            <td>
+
+                                                <button type=" button " class="btn btn-default " ng-click="deleteQuestionSet(item) "><i class="fa fa-times "></i>
+                                                </button>
+
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group ">
+
+                        <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <button type="submit " class="btn btn-default ">Save/Update</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-default ">Cancel</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
