@@ -289,7 +289,7 @@ app.directive('ckeditor', function($log) {
             $log.log('attr is ', attr);
 
             var ck = CKEDITOR.replace(elm[0], {
-                height: '350px'
+                height: '300px'
             });
             var contentUnWatcher = scope.$watch('content', function(newContent) {
                 $log.log('content changed, ', newContent);
@@ -330,6 +330,14 @@ app.controller('BodyCtrl', function($scope, $rootScope, MaskEvent, $log) {
         }
     });
 });
+
+
+app.controller('MenuCtrl', function($scope, $location) {
+    $scope.isMenuSelected = function(menu) {
+        var currentPath = $location.path();
+        return currentPath.indexOf(menu) != -1;
+    };
+})
 
 app.service('MaskService', ['$rootScope', 'MaskEvent', '$log',
     function($rootScope, MaskEvent, $log) {
@@ -419,13 +427,13 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
     };
 
     $scope.delete = function(item) {
-        QuestionSet.delete(item, function() {
+        QuestionSetService.delete(item, function() {
             $scope.query();
         });
     };
     $scope.submit = function(item) {
         $log.log('submit question set.', item);
-        QuestionSet.save(item, function() {
+        QuestionSetService.save(item, function() {
             $scope.query();
         });
     };
@@ -651,7 +659,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     };
 
     $scope.edit = function(item) {
-
+        $location.path('/quiz/' + item.id);
     }
 
 });;app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $timeout, $location, QuestionSetService, QuizService, FormTypeService, Status, MaskService) {
@@ -667,6 +675,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         }, function(data) {
             $scope.quiz = data.result;
             calculateRemainFormFields();
+            calculateRemainQuestionSets();
         });
     };
 
@@ -684,13 +693,18 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         if (!$scope.quiz || !$scope.fieldTypes) {
             return;
         }
-        $scope.remainFormFields = $scope.fieldTypes.slice();
-        angular.forEach($scope.quiz.formFields, function(formField) {
-            var idx = $scope.remainFormFields.indexOf(formField);
-            if (idx != -1) {
-                $scope.remainFormFields.splice(idx, 1);
+
+        $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
+
+            var foundFormField = _.findWhere(result, {
+                id: formField.id
+            });
+            if (foundFormField) {
+                var idx = result.indexOf(foundFormField);
+                result.splice(idx, 1);
             }
-        });
+            return result;
+        }, $scope.fieldTypes.slice());
     };
 
     var calculateRemainQuestionSets = function() {
@@ -698,13 +712,18 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
             return;
         }
 
-        $scope.remainQuestionSets = $scope.questionSets.slice();
-        angular.forEach($scope.quiz.questionSets, function(questionSetAssc) {
-            var idx = $scope.remainQuestionSets.indexOf(questionSetAssc.qs);
-            if (idx != -1) {
-                $scope.remainQuestionSets.splice(idx, 1);
+        $scope.remainQuestionSets = _.reduce($scope.quiz.questionSets, function function_name(result, qsAssc) {
+
+            var foundQs = _.findWhere(result, {
+                id: qsAssc.qs.id
+            });
+            if (foundQs) {
+                var idx = result.indexOf(foundQs);
+                result.splice(idx, 1);
             }
-        });
+            return result;
+        }, $scope.questionSets.slice());
+
     }
 
     QuestionSetService.query(function(data) {
@@ -761,6 +780,10 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     };
 
     $scope.addQuestionSet = function(item) {
+        if (!item.percentage) {
+            alert("请输入百分比");
+            return;
+        }
         $scope.quiz.questionSets || ($scope.quiz.questionSets = []);
         if (searchQs(item.qs) == -1) {
             $scope.quiz.questionSets.push(item);
@@ -782,12 +805,40 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         calculateRemainQuestionSets();
     };
 
+    var validatePercetage = function(item) {
+        if (!item.questionSets) {
+            return false;
+        }
+
+        var sum = _.reduce(item.questionSets, function(result, qsAssc) {
+            if (qsAssc.qs) {
+                result += qsAssc.percentage;
+            }
+            return result;
+
+        }, 0);
+        $log.log('sum is ', sum)
+        if (sum != 100) {
+            alert("百分比相加应该是100.");
+            return false;
+        }
+        return true
+    };
+
+
     $scope.submit = function(item) {
         $log.log('submit quiz.', item);
+        if (!validatePercetage(item)) {
+            return;
+        }
         QuizService.save(item, function() {
             query();
         });
     };
+
+    $scope.cancel = function() {
+        $location.path('/quizs');
+    }
 });;app.service('FormTypeService', function($resource, $log) {
     var FieldType = $resource('/mvc/formfieldtype/:id', {
         id: '@id'

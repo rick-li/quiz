@@ -40,7 +40,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     };
 
     $scope.edit = function(item) {
-
+        $location.path('/quiz/' + item.id);
     }
 
 });

@@ -53,7 +53,7 @@ app.directive('ckeditor', function($log) {
             $log.log('attr is ', attr);
 
             var ck = CKEDITOR.replace(elm[0], {
-                height: '350px'
+                height: '300px'
             });
             var contentUnWatcher = scope.$watch('content', function(newContent) {
                 $log.log('content changed, ', newContent);
@@ -94,6 +94,14 @@ app.controller('BodyCtrl', function($scope, $rootScope, MaskEvent, $log) {
         }
     });
 });
+
+
+app.controller('MenuCtrl', function($scope, $location) {
+    $scope.isMenuSelected = function(menu) {
+        var currentPath = $location.path();
+        return currentPath.indexOf(menu) != -1;
+    };
+})
 
 app.service('MaskService', ['$rootScope', 'MaskEvent', '$log',
     function($rootScope, MaskEvent, $log) {

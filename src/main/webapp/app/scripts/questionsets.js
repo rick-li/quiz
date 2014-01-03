@@ -41,13 +41,13 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
     };
 
     $scope.delete = function(item) {
-        QuestionSet.delete(item, function() {
+        QuestionSetService.delete(item, function() {
             $scope.query();
         });
     };
     $scope.submit = function(item) {
         $log.log('submit question set.', item);
-        QuestionSet.save(item, function() {
+        QuestionSetService.save(item, function() {
             $scope.query();
         });
     };
