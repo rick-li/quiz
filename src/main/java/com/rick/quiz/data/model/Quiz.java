@@ -25,7 +25,7 @@ public class Quiz {
 	
 	int timespan;
 	
-	List<QuestionSetAssociation> quetionSets = Lists.newArrayList();
+	List<QuestionSetAssociation> questionSets = Lists.newArrayList();
 	
 	List<FormFieldType> formFields = Lists.newArrayList();
 
@@ -69,12 +69,12 @@ public class Quiz {
 		this.questionNum = questionNum;
 	}
 
-	public List<QuestionSetAssociation> getQuetionSets() {
-		return quetionSets;
+	public List<QuestionSetAssociation> getQuestionSets() {
+		return questionSets;
 	}
 
-	public void setQuetionSets(List<QuestionSetAssociation> quetionSets) {
-		this.quetionSets = quetionSets;
+	public void setQuestionSets(List<QuestionSetAssociation> questionSets) {
+		this.questionSets = questionSets;
 	}
 
 	public List<FormFieldType> getFormFields() {

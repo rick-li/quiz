@@ -37,7 +37,7 @@ public class QuizReposotoryTest {
 		QuestionSetAssociation qa = new QuestionSetAssociation();
 		qa.setPercentage(0.3f);
 		qa.setQs(qs);
-		q.getQuetionSets().add(qa);
+		q.getQuestionSets().add(qa);
 		qzRepo.save(q);
 	}
 }

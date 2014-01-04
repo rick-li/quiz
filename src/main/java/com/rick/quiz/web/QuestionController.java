@@ -52,7 +52,7 @@ public class QuestionController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateQuestion(@RequestBody Question pq){
 		Question q = qr.save(pq);
 		Result r = new Result(Status.SUCCESS);

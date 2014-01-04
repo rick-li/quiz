@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.rick.quiz.data.model.FormFieldType;
 import com.rick.quiz.data.model.Quiz;
 import com.rick.quiz.data.repo.QuizRepo;
 import com.rick.quiz.web.Result.Status;
@@ -46,7 +48,7 @@ public class QuizController {
 	
 //	@Secured("ROLE_ADMIN")
 	@ResponseBody
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.DELETE)
 	public Result deleteQuestionSet(@PathVariable("id") String id){
 		Quiz quiz = quizRepo.findOne(id);
 		if(quiz != null){
@@ -58,23 +60,9 @@ public class QuizController {
 	
 //	@Secured("ROLE_ADMIN")
 	@ResponseBody
-	@RequestMapping(value="/", method=RequestMethod.POST)
-	public Result createOrUpdateQuiz(HttpServletRequest request){
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String intro = request.getParameter("introduction");
-		int questionNum = Integer.parseInt(request.getParameter("questionNum"));
-		//TODO check how angular post a list with $resource
-		Quiz quiz = null;
-		
-		if(id != null){
-			quiz = quizRepo.findOne(id);
-		}else{
-			quiz = new Quiz();
-		}
-		quiz.setName(name);
-		quiz.setIntroduction(intro);
-		quiz.setQuestionNum(questionNum);
+	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	public Result createOrUpdateQuiz(@RequestBody Quiz quiz){
+		quizRepo.save(quiz);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(quiz.getId());
 		return r;
