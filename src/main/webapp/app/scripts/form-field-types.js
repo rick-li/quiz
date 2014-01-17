@@ -12,7 +12,7 @@ app.service('FormTypeService', function($resource, $log) {
 });
 
 app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService) {
-
+    $scope.selectedItem = {};
     var query = function() {
         FormTypeService.query(function(data) {
             $scope.fieldTypes = data.result;
@@ -20,7 +20,9 @@ app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService
     };
 
     query();
-
+    $scope.select = function(item) {
+        $scope.selectedItem = item;
+    }
     $scope.submit = function(item) {
         FormTypeService.save(item, function() {
             query();
@@ -28,7 +30,7 @@ app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService
     };
 
     $scope.delete = function(item) {
-        FormTypeService.delete(item, function() {
+        FormTypeService.delete(item, function(argument) {
             query();
         });
     };

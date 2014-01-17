@@ -167,8 +167,13 @@ app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $ti
         if (!validatePercetage(item)) {
             return;
         }
-        QuizService.save(item, function() {
+        QuizService.save(item, function(item) {
+            // debugger;
+
+            quizId = item.result;
             query();
+        }, function() {
+            $log.log('error');
         });
     };
 

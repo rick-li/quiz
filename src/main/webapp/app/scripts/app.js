@@ -55,24 +55,28 @@ app.directive('ckeditor', function($log) {
             var ck = CKEDITOR.replace(elm[0], {
                 height: '300px'
             });
+
             var contentUnWatcher = scope.$watch('content', function(newContent) {
                 $log.log('content changed, ', newContent);
                 if (newContent) {
-                    ck.setData(newContent);
-                    contentUnWatcher();
+                    ck.on('instanceReady', function() {
+                        ck.setData(newContent);
+                        contentUnWatcher();
+
+                    });
                 }
             })
 
 
-            ck.on('instanceReady', function() {
-                ck.setData(scope.content);
-            });
 
-            function updateModel() {
-                scope.$apply(function() {
-                    scope.content = ck.getData();
-                });
-            }
+
+                function updateModel() {
+                    $log.log('updating ', ck.getData());
+                    scope.$apply(function() {
+
+                        scope.content = ck.getData();
+                    });
+                }
 
             ck.on('change', updateModel);
             ck.on('key', updateModel);

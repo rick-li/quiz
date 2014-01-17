@@ -19,17 +19,21 @@
                                     <tr>
                                         <th>Name <i class="fa fa-sort"></i>
                                         </th>
-
+                                        <th>Type <i class="fa fa-sort"></i>
+                                        </th>
+                                        <th>Regex <i class="fa fa-sort"></i>
+                                        </th>
                                         <th></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr ng-repeat="item in quiz.formFields" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
+                                    <tr ng-repeat="item in fieldTypes" ng-click="select(item)" ng-class="{success:selectedItem.id == item.id}">
                                         <td>{{item.name}}</td>
-
+                                        <td>{{item.type}}</td>
+                                        <td>{{item.regex}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-default" ng-click="deleteFormField(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
+                                            <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i>
                                             </button>
 
 
@@ -50,6 +54,14 @@
                 <div class="form-group">
                     <label for="fieldTypeName">Name</label>
                     <input type="text" class="form-control" id="fieldTypeName" placeholder="" ng-model="selectedItem.name" required>
+                </div>
+                <div class="form-group">
+                    <label for="fieldTypeName">Type</label>
+                    <input type="text" class="form-control" id="fieldTypeType" placeholder="" ng-model="selectedItem.type" required>
+                </div>
+                <div class="form-group">
+                    <label for="fieldTypeName">Regex</label>
+                    <input type="text" class="form-control" id="fieldTypeType" placeholder="" ng-model="selectedItem.regex" required>
                 </div>
 
                 <div class="form-group">

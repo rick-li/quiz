@@ -60,7 +60,7 @@ public class QuizController {
 	
 //	@Secured("ROLE_ADMIN")
 	@ResponseBody
-	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	@RequestMapping(value={"","/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateQuiz(@RequestBody Quiz quiz){
 		quizRepo.save(quiz);
 		Result r = new Result(Status.SUCCESS);

@@ -291,24 +291,28 @@ app.directive('ckeditor', function($log) {
             var ck = CKEDITOR.replace(elm[0], {
                 height: '300px'
             });
+
             var contentUnWatcher = scope.$watch('content', function(newContent) {
                 $log.log('content changed, ', newContent);
                 if (newContent) {
-                    ck.setData(newContent);
-                    contentUnWatcher();
+                    ck.on('instanceReady', function() {
+                        ck.setData(newContent);
+                        contentUnWatcher();
+
+                    });
                 }
             })
 
 
-            ck.on('instanceReady', function() {
-                ck.setData(scope.content);
-            });
 
-            function updateModel() {
-                scope.$apply(function() {
-                    scope.content = ck.getData();
-                });
-            }
+
+                function updateModel() {
+                    $log.log('updating ', ck.getData());
+                    scope.$apply(function() {
+
+                        scope.content = ck.getData();
+                    });
+                }
 
             ck.on('change', updateModel);
             ck.on('key', updateModel);
@@ -651,11 +655,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     };
 
     $scope.new = function() {
-        $scope.newItemCreated = true;
-        $timeout(function() {
-            $scope.newItemCreated = false;
-        }, 3000)
-        $scope.selectedItem = {};
+        $location.path('/quiz/new');
     };
 
     $scope.edit = function(item) {
@@ -831,8 +831,13 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         if (!validatePercetage(item)) {
             return;
         }
-        QuizService.save(item, function() {
+        QuizService.save(item, function(item) {
+            // debugger;
+
+            quizId = item.result;
             query();
+        }, function() {
+            $log.log('error');
         });
     };
 
@@ -853,7 +858,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
 });
 
 app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService) {
-
+    $scope.selectedItem = {};
     var query = function() {
         FormTypeService.query(function(data) {
             $scope.fieldTypes = data.result;
@@ -861,7 +866,9 @@ app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService
     };
 
     query();
-
+    $scope.select = function(item) {
+        $scope.selectedItem = item;
+    }
     $scope.submit = function(item) {
         FormTypeService.save(item, function() {
             query();
@@ -869,7 +876,7 @@ app.controller('FormTypeCtrl', function($scope, $resource, $log, FormTypeService
     };
 
     $scope.delete = function(item) {
-        FormTypeService.delete(item, function() {
+        FormTypeService.delete(item, function(argument) {
             query();
         });
     };

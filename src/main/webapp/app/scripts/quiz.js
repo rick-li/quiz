@@ -32,11 +32,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     };
 
     $scope.new = function() {
-        $scope.newItemCreated = true;
-        $timeout(function() {
-            $scope.newItemCreated = false;
-        }, 3000)
-        $scope.selectedItem = {};
+        $location.path('/quiz/new');
     };
 
     $scope.edit = function(item) {

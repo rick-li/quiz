@@ -10,6 +10,10 @@ public class FormFieldType {
 	String id;
 	
 	String name;
+	
+	String type;
+	
+	String regex;
 
 	public String getId() {
 		return id;
@@ -26,5 +30,23 @@ public class FormFieldType {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getRegex() {
+		return regex;
+	}
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
+	
+	
 	
 }
