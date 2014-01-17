@@ -2,9 +2,8 @@ package com.rick.quiz.web;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.rick.quiz.data.model.FormFieldType;
 import com.rick.quiz.data.model.Quiz;
 import com.rick.quiz.data.repo.QuizRepo;
 import com.rick.quiz.web.Result.Status;
@@ -28,6 +26,8 @@ public class QuizController {
 	
 	Gson gson = new Gson();
 	
+	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public Result getQuestionSet(){

@@ -100,14 +100,14 @@ module.exports = function(grunt) {
                     'lib/angular/angular-resource.min.js',
                     'lib/underscore-min.js',
 
-                    'app/scripts/app.js',
-                    'app/scripts/questionsets.js',
-                    'app/scripts/questions.js',
-                    'app/scripts/detail.js',
-                    'app/scripts/login.js',
-                    'app/scripts/quiz.js',
-                    'app/scripts/quiz-editor.js',
-                    'app/scripts/form-field-types.js'
+                    'admin/app/scripts/app.js',
+                    'admin/app/scripts/questionsets.js',
+                    'admin/app/scripts/questions.js',
+                    'admin/app/scripts/detail.js',
+                    'admin/app/scripts/login.js',
+                    'admin/app/scripts/quiz.js',
+                    'admin/app/scripts/quiz-editor.js',
+                    'admin/app/scripts/form-field-types.js'
                     //place your JavaScript files here
                 ]
             },
@@ -118,11 +118,11 @@ module.exports = function(grunt) {
                 livereload: 7777
             },
             assets: {
-                files: ['app/styles/**/*.css', 'app/scripts/**/*.js', 'app/**/*.html', ],
+                files: ['admin/app/styles/**/*.css', 'admin/app/scripts/**/*.js', 'admin/app/**/*.html', ],
                 tasks: ['concat']
             },
             protractor: {
-                files: ['app/scripts/**/*.js', 'test/e2e/**/*.js'],
+                files: ['admin/app/scripts/**/*.js', 'test/e2e/**/*.js'],
                 tasks: ['protractor:auto']
             }
         },
