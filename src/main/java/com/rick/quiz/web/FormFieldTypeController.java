@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,7 @@ public class FormFieldTypeController {
 		return r;
 	}
 
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public Result deleteFormFieldType(@PathVariable("id") String id){
@@ -54,7 +56,7 @@ public class FormFieldTypeController {
 		return r;
 	}
 	
-	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateFormFieldType(@RequestBody FormFieldType fieldType){

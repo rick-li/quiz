@@ -83,9 +83,9 @@ module.exports = function(grunt) {
 
         concat: {
             styles: {
-                dest: './app/assets/app.css',
+                dest: './admin/app/assets/app.css',
                 src: [
-                    'app/styles/app.css',
+                    'admin/app/styles/app.css',
                     //place your Stylesheet files here
                 ]
             },
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
                 options: {
                     separator: ';'
                 },
-                dest: './app/assets/app.js',
+                dest: './admin/app/assets/app.js',
                 src: [
                     'lib/angular/angular.min.js',
                     'lib/angular/angular-route.min.js',

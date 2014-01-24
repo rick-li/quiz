@@ -5,7 +5,7 @@ app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $rout
     $scope.newItemCreated = false;
     $scope.newOptionCreated = false;
 
-    var Question = $resource('/mvc/questions/:id?questionSetId=:qsId', {
+    var Question = $resource('/quiz/mvc/questions/:id?questionSetId=:qsId', {
         id: '@id',
         qsId: '@qsId'
     }, {

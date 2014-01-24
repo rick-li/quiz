@@ -1,5 +1,5 @@
 app.service('QuestionSetService', function($log, $resource) {
-    var QuestionSet = $resource('/mvc/questionsets/:id', {
+    var QuestionSet = $resource('/quiz/mvc/questionsets/:id', {
         id: '@id'
     }, {
         query: {

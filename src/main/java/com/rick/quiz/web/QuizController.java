@@ -27,7 +27,6 @@ public class QuizController {
 	Gson gson = new Gson();
 	
 	
-	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="", method=RequestMethod.GET)
 	public Result getQuestionSet(){
@@ -46,7 +45,7 @@ public class QuizController {
 		return r;
 	}
 	
-//	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.DELETE)
 	public Result deleteQuestionSet(@PathVariable("id") String id){
@@ -58,7 +57,7 @@ public class QuizController {
 		return r;
 	}
 	
-//	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value={"","/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateQuiz(@RequestBody Quiz quiz){

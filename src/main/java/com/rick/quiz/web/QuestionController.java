@@ -51,6 +51,7 @@ public class QuestionController {
 		return r;
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateQuestion(@RequestBody Question pq){

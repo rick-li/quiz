@@ -1,5 +1,5 @@
 app.service('QuizService', function($rootScope, $log, $resource) {
-    var Quiz = $resource('/mvc/quiz/:id', {
+    var Quiz = $resource('/quiz/mvc/quiz/:id', {
         id: '@id'
     }, {
         query: {

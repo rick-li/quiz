@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Quiz Admin</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="styles/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="styles/sb-admin.css" rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+
+<body ng-controller="BodyCtrl">
+    <div ng-class="{'duo-mask':loadingMask == true}">
+        <div ng-class="{'duo-spinner-wrapper':loadingMask == true}" class="duo-hidden">
+            <div class="duo-spinner"></div>
+        </div>
+    </div>
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="NavCtrl">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Quiz Admin</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav" ng-controller="MenuCtrl">
+
+
+                    <li ng-class="{active:isMenuSelected('questionsets')}"><a href="index.html#questionsets"><i class="fa fa-folder"></i> Question Set</a>
+                    </li>
+
+                    <li ng-class="{active:isMenuSelected('quizs')}"><a href="index.html#quizs"><i class="fa fa-pencil-square-o"></i> Quiz</a>
+                    </li>
+
+                    <li ng-class="{active:isMenuSelected('fieldtypes')}"><a href="index.html#fieldtypes"><i class="fa fa-pencil-square-o"></i> Field Type</a>
+                    </li>
+
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+
+                    <!--          <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fa fa-globe" data-toggle="dropdown"></i> 中文<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"> English</a>
+                            </li>
+                            <li><a href="#"> German</a>
+                            </li>
+
+                            <li class="divider"></li>
+
+                        </ul>
+                    </li> -->
+
+                    <!--                     <li class="dropdown messages-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">7</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">7 New Messages</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar">
+                                        
+                                    </span>
+                                    <span class="name">John Smith:</span>
+                                    <span class="message">Hey there, I wanted to ask you something...</span>
+                                    <span class="time"><i class="fa fa-clock-o"></i> 4:34 PM</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+
+                            <li><a href="#">View Inbox <span class="badge">7</span></a>
+                            </li>
+                        </ul>
+                    </li> -->
+
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle"><i class="fa fa-user"></i> {{currentUser.attributes.username}}
+                         </a>
+
+                    </li>
+
+                    <li class="">
+                        <a href="#" class="dropdown-toggle" ng-click="logout()">
+                            <i class="fa fa-sign-out"></i> SignOut
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div ng-view>
+            </div>
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="../lib/jquery-1.10.2.min.js"></script>
+    <script src="../../lib/bootstrap.js"></script>
+    <!-- Page Specific Plugins -->
+
+    <script type="text/javascript" src="../lib/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="../lib/ckeditor/adapters/jquery.js"></script>
+
+    <script src="../lib/tablesorter/jquery.tablesorter.js"></script>
+    <script src="../lib/tablesorter/tables.js"></script>
+
+    <script src="./assets/app.js"></script>
+    <script>
+    $(document).ready(function() {
+
+        angular.bootstrap(document, ['myApp']);
+
+
+
+    })
+    </script>
+
+
+    <script src="//localhost:7777/livereload.js"></script>
+
+</body>
+
+</html>

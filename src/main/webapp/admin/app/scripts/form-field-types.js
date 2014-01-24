@@ -1,5 +1,5 @@
 app.service('FormTypeService', function($resource, $log) {
-    var FieldType = $resource('/mvc/formfieldtype/:id', {
+    var FieldType = $resource('/quiz/mvc/formfieldtype/:id', {
         id: '@id'
     }, {
         query: {

@@ -12,6 +12,7 @@
 	<servlet-mapping>
 		<servlet-name>spring-web</servlet-name>
 		<url-pattern>/mvc/*</url-pattern>
+		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

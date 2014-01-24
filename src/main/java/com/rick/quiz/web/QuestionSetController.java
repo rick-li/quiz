@@ -3,6 +3,7 @@ package com.rick.quiz.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +51,7 @@ public class QuestionSetController {
 		return r;
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public Result deleteQuestionSet(@PathVariable("id") String id){
@@ -61,6 +63,7 @@ public class QuestionSetController {
 		return r;
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value={"", "/{id}"}, method=RequestMethod.POST)
 	public Result createOrUpdateQuestionSet(@RequestBody QuestionSet qs){

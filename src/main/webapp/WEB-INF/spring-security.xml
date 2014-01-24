@@ -9,9 +9,9 @@
  	
 	<security:http auto-config="true">
 		<security:intercept-url pattern="/admin/**/*" access="ROLE_ADMIN" />
-		<security:form-login login-page="/mvc/admin/login" default-target-url="/admin/app/"
-			authentication-failure-url="/mvc/admin/login" />
-			<security:logout logout-success-url="/mvc/admin/logout" />
+		<security:form-login login-page="/public/login.do" default-target-url="/admin/app/"
+			authentication-failure-url="/public/login.do" />
+			<security:logout logout-success-url="/public/logout.do" />
 	</security:http>
  
 	<security:authentication-manager>

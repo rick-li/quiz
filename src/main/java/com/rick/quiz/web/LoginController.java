@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/public")
 public class LoginController {
 	
-	@RequestMapping(value="/login", method = RequestMethod.GET)
+	@RequestMapping(value="/login.do", method = RequestMethod.GET)
 	public String login(ModelMap model) {
  
 		return "login";
  
 	}
 	
-	@RequestMapping(value="/logout", method = RequestMethod.GET)
+	@RequestMapping(value="/logout.do", method = RequestMethod.GET)
 	public String loginout(ModelMap model) {
  
 		return "login";
  
 	}	
-//	j_spring_security_logout
+
 }
