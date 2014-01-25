@@ -38,8 +38,9 @@ public class QuizController {
 //	@Secured("ROLE_ADMIN")
 	@ResponseBody
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public Result getQuestionSet(@PathVariable("id") String id){
+	public Result getQuizById(@PathVariable("id") String id){
 		Quiz quiz = quizRepo.findOne(id);
+		
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(quiz);
 		return r;

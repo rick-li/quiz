@@ -7,7 +7,7 @@
                     <div class="panel-heading">
 
                         <div class="collapse navbar-collapse">
-                            <label for="">Form Fields</label>
+                            <label for="">表单字段</label>
 
                         </div>
                     </div>
@@ -17,9 +17,9 @@
                             <table class="table table-bordered table-hover table-striped tablesorter">
                                 <thead>
                                     <tr>
-                                        <th>Name <i class="fa fa-sort"></i>
+                                        <th>名称 <i class="fa fa-sort"></i>
                                         </th>
-                                        <th>Type <i class="fa fa-sort"></i>
+                                        <th>类型 <i class="fa fa-sort"></i>
                                         </th>
                                         <th>Regex <i class="fa fa-sort"></i>
                                         </th>
@@ -52,11 +52,11 @@
         <div class="col-md-4" ng-class="{glow:newItemCreated==true}">
             <form role="form" ng-submit="submit(selectedItem)">
                 <div class="form-group">
-                    <label for="fieldTypeName">Name</label>
+                    <label for="fieldTypeName">名称</label>
                     <input type="text" class="form-control" id="fieldTypeName" placeholder="" ng-model="selectedItem.name" required>
                 </div>
                 <div class="form-group">
-                    <label for="fieldTypeName">Type</label>
+                    <label for="fieldTypeName">类型</label>
                     <input type="text" class="form-control" id="fieldTypeType" placeholder="" ng-model="selectedItem.type" required>
                 </div>
                 <div class="form-group">
@@ -67,10 +67,10 @@
                 <div class="form-group">
 
                     <div class="col-sm-6">
-                        <button type="submit" class="btn btn-default">Save/Update</button>
+                        <button type="submit" class="btn btn-default">保存</button>
                     </div>
                     <div class="col-sm-6">
-                        <button type='button' class="btn btn-default" ng-click="selectedItem={}">Add New</button>
+                        <button type='button' class="btn btn-default" ng-click="selectedItem={}">另增一条</button>
                     </div>
                 </div>
             </form>

@@ -526,8 +526,8 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             $scope.selectedItem.options = [];
             $scope.selectedItem.rightAnswer = [];
         }
-        if ($scope.selectedItem.options.length >= 4) {
-            alert("不能大于4个");
+        if ($scope.selectedItem.options.length >= 6) {
+            alert("选项不能大于6个");
             return;
         }
         if ($scope.selectedItem.options.indexOf(opt) != -1) {
@@ -655,6 +655,12 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $scope.selectedItem = item;
     };
 
+    $scope.delete = function(item) {
+        QuizService.delete(item, function() {
+            $scope.query();
+        });
+    }
+
     $scope.new = function() {
         $location.path('/quiz/new');
     };
@@ -698,7 +704,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
 
             var foundFormField = _.findWhere(result, {
-                id: formField.id
+                id: formField.type.id
             });
             if (foundFormField) {
                 var idx = result.indexOf(foundFormField);
@@ -742,7 +748,10 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
 
         $scope.quiz.formFields || ($scope.quiz.formFields = []);
         if ($scope.quiz.formFields.indexOf(item) == -1) {
-            $scope.quiz.formFields.push(item);
+            $scope.quiz.formFields.push({
+                isRequired: false,
+                type: item
+            });
         }
         calculateRemainFormFields();
     };
@@ -834,9 +843,9 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         }
         QuizService.save(item, function(item) {
             // debugger;
-
             quizId = item.result;
             query();
+            window.alert("成功保存");
         }, function() {
             $log.log('error');
         });

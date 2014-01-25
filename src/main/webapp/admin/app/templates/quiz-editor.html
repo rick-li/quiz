@@ -5,17 +5,17 @@
                 <div class="col-md-12">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="questionsetName">Name:</label>
+                            <label for="questionsetName">试卷名称:</label>
                             <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="quiz.name" required>
 
                         </div>
                         <div class="form-group">
-                            <label>Question number:</label>
+                            <label>题目数量:</label>
                             <input type="number" ng-model="quiz.questionNum" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="quizEditor">Introduction:</label>
+                            <label for="quizEditor">介绍:</label>
                             <ckeditor content="quiz.introduction"></ckeditor>
                         </div>
                     </div>
@@ -24,11 +24,10 @@
 
                         <div class="form-group">
 
-                            <label for="questionsetName">FormElement</label>
+                            <label for="questionsetName">表单字段</label>
                             <div class="input-group">
                                 <select ng-model="chosenFieldType" ng-options="f.name for f in remainFormFields"></select>
-
-                                <button class="btn btn-default" type="button" ng-click="addFormField(chosenFieldType)">add</button>
+                                <button class="btn btn-default" type="button" ng-click="addFormField(chosenFieldType)">增加</button>
 
                             </div>
                         </div>
@@ -36,8 +35,8 @@
                             <div class="panel-heading">
                                 <div class="collapse navbar-collapse">
 
-                                    <label for="">Form Fields</label>
-                                    <a href="" ng-click="selectedFormField = {}"><i class="fa fa-plus"></i> 新增</a>
+                                    <label for="">表单字段</label>
+
                                 </div>
                             </div>
 
@@ -46,10 +45,17 @@
                                     <table class="table table-bordered table-hover table-striped tablesorter">
 
                                         <tbody>
+                                            <thead>
+                                                <th>字段</th>
+                                                <th>必须</th>
+                                                <th></th>
+                                            </thead>
                                             <tr ng-repeat="item in quiz.formFields" ng-click="setSelectedFormField(item)" ng-class="{success:selectedFormField === item}">
 
-                                                <td>{{item.name}}</td>
-
+                                                <td>{{item.type.name}}</td>
+                                                <td>
+                                                    <input type="checkbox" class="" ng-model="item.isRequired"></input>
+                                                </td>
                                                 <td>
 
                                                     <button type=" button " class="btn btn-default " ng-click="deleteFormField(item) "><i class="fa fa-times "></i>
@@ -67,18 +73,18 @@
 
                         <!-- question sets -->
                         <div class="form-group">
-                            <label for="">QuestionSets</label>
+                            <label for="">题库</label>
                             <select ng-model="selectedQuestionSet.qs" ng-options="qs.name for qs in remainQuestionSets"></select>
 
 
                         </div>
                         <div class="form-group">
 
-                            <label for="">Percentage</label>
+                            <label for="">百分比</label>
 
                             <div class="input-group">
                                 <input type="number" id="questionSetPercentage" placeholder="" default="0" ng-model="selectedQuestionSet.percentage">
-                                <button class="btn btn-default" type="button" ng-click="addQuestionSet(selectedQuestionSet)">add</button>
+                                <button class="btn btn-default" type="button" ng-click="addQuestionSet(selectedQuestionSet)">增加</button>
                             </div>
 
                         </div>
@@ -91,8 +97,8 @@
 
                                 <div class="collapse navbar-collapse">
 
-                                    <label for="">QuestionSets</label>
-                                    <a href="" ng-click="selectedQuestionSet = {}"><i class="fa fa-plus"></i> 新增</a>
+                                    <label for="">题库</label>
+
 
                                 </div>
                             </div>
@@ -132,10 +138,10 @@
 
                     <div class="col-sm-12 duo-form-buttons">
                         <div class="col-sm-6">
-                            <button type="submit " class="btn btn-default ">Save/Update</button>
+                            <button type="submit " class="btn btn-default ">保存</button>
                         </div>
                         <div class="col-sm-6">
-                            <button type="button" class="btn btn-default " ng-click="cancel()">Cancel</button>
+                            <button type="button" class="btn btn-default " ng-click="cancel()">返回</button>
                         </div>
                     </div>
 

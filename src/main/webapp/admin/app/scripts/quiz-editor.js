@@ -33,7 +33,7 @@ app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $ti
         $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
 
             var foundFormField = _.findWhere(result, {
-                id: formField.id
+                id: formField.type.id
             });
             if (foundFormField) {
                 var idx = result.indexOf(foundFormField);
@@ -77,7 +77,10 @@ app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $ti
 
         $scope.quiz.formFields || ($scope.quiz.formFields = []);
         if ($scope.quiz.formFields.indexOf(item) == -1) {
-            $scope.quiz.formFields.push(item);
+            $scope.quiz.formFields.push({
+                isRequired: false,
+                type: item
+            });
         }
         calculateRemainFormFields();
     };
@@ -169,9 +172,9 @@ app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $ti
         }
         QuizService.save(item, function(item) {
             // debugger;
-
             quizId = item.result;
             query();
+            window.alert("成功保存");
         }, function() {
             $log.log('error');
         });

@@ -31,6 +31,12 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $scope.selectedItem = item;
     };
 
+    $scope.delete = function(item) {
+        QuizService.delete(item, function() {
+            $scope.query();
+        });
+    }
+
     $scope.new = function() {
         $location.path('/quiz/new');
     };

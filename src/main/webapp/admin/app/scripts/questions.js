@@ -76,8 +76,8 @@ app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $rout
             $scope.selectedItem.options = [];
             $scope.selectedItem.rightAnswer = [];
         }
-        if ($scope.selectedItem.options.length >= 4) {
-            alert("不能大于4个");
+        if ($scope.selectedItem.options.length >= 6) {
+            alert("选项不能大于6个");
             return;
         }
         if ($scope.selectedItem.options.indexOf(opt) != -1) {
