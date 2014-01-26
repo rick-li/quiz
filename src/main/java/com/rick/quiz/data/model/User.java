@@ -13,16 +13,16 @@ public class User {
 	@Id
 	String id;
 	
-	List<FormField> formFields = Lists.newArrayList();
+	List<QuizFormField> formFields = Lists.newArrayList();
 	
 	@DBRef
 	List<UserQuiz> userQuizs = Lists.newArrayList();
 
-	public List<FormField> getFormFields() {
+	public List<QuizFormField> getFormFields() {
 		return formFields;
 	}
 
-	public void setFormFields(List<FormField> formFields) {
+	public void setFormFields(List<QuizFormField> formFields) {
 		this.formFields = formFields;
 	}
 

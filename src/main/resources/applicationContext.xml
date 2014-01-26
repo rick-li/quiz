@@ -23,6 +23,7 @@
 	<!-- Enable annotation -->
 	<context:annotation-config />
 	<context:component-scan base-package="com.rick.quiz.data" />
+	<context:component-scan base-package="com.rick.quiz.service" />
 	<mongo:repositories base-package="com.rick.quiz.data.repo" />
 
 

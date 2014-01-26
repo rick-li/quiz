@@ -33,11 +33,21 @@
 		<property name="supportedMediaTypes" value="application/json" />
 	</bean>
 
+	<bean id="byteArrayConverter"
+		class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>image/*</value>
+			</list>
+		</property>
+	</bean>
+
 	<bean
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
 				<ref bean="jsonConverter" />
+				<ref bean="byteArrayConverter" />
 			</list>
 		</property>
 	</bean>

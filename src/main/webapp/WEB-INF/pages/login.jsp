@@ -21,7 +21,7 @@
 			${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
 		</div>
 	</c:if>
-
+	<image src="/quiz/mvc/user/capcha.png"></image>
 	<form name='f' action="<c:url value='/j_spring_security_check' />"
 		method='POST'>
 

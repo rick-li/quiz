@@ -27,7 +27,7 @@ public class Quiz {
 	
 	List<QuestionSetAssociation> questionSets = Lists.newArrayList();
 	
-	List<FormField> formFields = Lists.newArrayList();
+	List<QuizFormField> formFields = Lists.newArrayList();
 
 	public String getId() {
 		return id;
@@ -77,11 +77,11 @@ public class Quiz {
 		this.questionSets = questionSets;
 	}
 
-	public List<FormField> getFormFields() {
+	public List<QuizFormField> getFormFields() {
 		return formFields;
 	}
 
-	public void setFormFields(List<FormField> formFields) {
+	public void setFormFields(List<QuizFormField> formFields) {
 		this.formFields = formFields;
 	}
 

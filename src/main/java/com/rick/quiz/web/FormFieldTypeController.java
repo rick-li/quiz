@@ -2,8 +2,6 @@ package com.rick.quiz.web;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,6 @@ import com.rick.quiz.web.Result.Status;
 @Controller
 @RequestMapping("/formfieldtype")
 public class FormFieldTypeController {
-	private Logger log = LoggerFactory.getLogger(FormFieldTypeController.class);
 		
 	@Autowired
 	private FormFieldTypeRepo repo;

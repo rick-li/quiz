@@ -2,20 +2,14 @@ package com.rick.quiz.data.model;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public class FormField {
+
+public class QuizFormField {
 	
-	String value;
+	Boolean isRequired;
 	
 	@DBRef
 	FormFieldType type;
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
 
 	public FormFieldType getType() {
 		return type;
@@ -24,6 +18,15 @@ public class FormField {
 	public void setType(FormFieldType type) {
 		this.type = type;
 	}
+
+	public Boolean getIsRequired() {
+		return isRequired;
+	}
+
+	public void setIsRequired(Boolean isRequired) {
+		this.isRequired = isRequired;
+	}
 	
 	
+
 }
