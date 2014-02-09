@@ -21,9 +21,16 @@
                     </div>
 
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label>试卷代码:</label>
+                            <input type="text" ng-model="quiz.code" required>
+                        </div>
+                        <div class="form-group">
+                            <label>时间长度:</label>
+                            <input type="number" ng-model="quiz.durationInMin" required>分钟
+                        </div>
 
                         <div class="form-group">
-
                             <label for="questionsetName">表单字段</label>
                             <div class="input-group">
                                 <select ng-model="chosenFieldType" ng-options="f.name for f in remainFormFields"></select>

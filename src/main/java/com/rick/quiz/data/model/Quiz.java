@@ -17,9 +17,13 @@ public class Quiz {
 	@Id
 	String id;
 	
+	String code;
+	
 	String name;
 	
 	String introduction;
+	
+	int durationInMin;
 	
 	int questionNum;
 	
@@ -43,6 +47,14 @@ public class Quiz {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getIntroduction() {
@@ -85,6 +97,13 @@ public class Quiz {
 		this.formFields = formFields;
 	}
 
-	
+	public int getDurationInMin() {
+		return durationInMin;
+	}
+
+	public void setDurationInMin(int durationInMin) {
+		this.durationInMin = durationInMin;
+	}
+
 	
 }

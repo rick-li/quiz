@@ -82,14 +82,27 @@ module.exports = function(grunt) {
         },
 
         concat: {
-            styles: {
-                dest: './admin/app/assets/app.css',
+            clientScripts: {
+                dest: 'app/assets/app.js',
+                src: [
+                    'app/scripts/app.js'
+                ]
+            },
+            clientStyles: {
+                dest: 'app/assets/app.css',
+                src: [
+                    'app/styles/app.css'
+                ]
+            },
+
+            adminStyles: {
+                dest: 'admin/app/assets/app.css',
                 src: [
                     'admin/app/styles/app.css',
                     //place your Stylesheet files here
                 ]
             },
-            scripts: {
+            adminScripts: {
                 options: {
                     separator: ';'
                 },
@@ -110,16 +123,22 @@ module.exports = function(grunt) {
                     'admin/app/scripts/form-field-types.js'
                     //place your JavaScript files here
                 ]
-            },
+            }
+
+
         },
 
         watch: {
             options: {
                 livereload: 7777
             },
-            assets: {
+            adminAssets: {
                 files: ['admin/app/styles/**/*.css', 'admin/app/scripts/**/*.js', 'admin/app/**/*.html', ],
-                tasks: ['concat']
+                tasks: ['concat:adminStyles', 'concat:adminScripts']
+            },
+            clientAssets: {
+                files: ['app/styles/**/*.css', 'app/scripts/**/*.js', 'app/**/*.html', ],
+                tasks: ['concat:clientStyles', 'concat:clientScripts']
             },
             protractor: {
                 files: ['admin/app/scripts/**/*.js', 'test/e2e/**/*.js'],
@@ -179,14 +198,16 @@ module.exports = function(grunt) {
 
     //installation-related
     grunt.registerTask('install', ['update', 'shell:protractor_install']);
-    grunt.registerTask('update', ['concat']);
+    // grunt.registerTask('updateAdmin', ['concatAdmin']);
+    // grunt.registerTask('updateClient', ['concatClient']);
 
     //defaults
-    grunt.registerTask('default', ['dev']);
+    grunt.registerTask('default', ['clientDev']);
 
     //development
     // grunt.registerTask('dev', ['update', 'connect:devserver', 'watch:assets']);
-    grunt.registerTask('dev', ['update', 'watch:assets']);
+    grunt.registerTask('adminDev', ['concat:adminStyles', 'concat:adminScripts', 'connect:devserver', 'watch:adminAssets']);
+    grunt.registerTask('clientDev', ['concat:clientStyles', 'concat:clientScripts','connect:devserver', 'watch:clientAssets']);
 
     //server daemon
     grunt.registerTask('serve', ['connect:webserver']);

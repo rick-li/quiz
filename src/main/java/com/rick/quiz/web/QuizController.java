@@ -32,10 +32,25 @@ public class QuizController {
 	
 	@ResponseBody
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public Result getQuestionSet(){
+	public Result getQuizList(){
 		List<Quiz> quizList = Lists.newArrayList(quizRepo.findAll());
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(quizList);
+		return r;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/quizCode/{quizCode}", method=RequestMethod.GET)
+	public Result getQuizByCode(@PathVariable("quizCode") String quizCode){
+		Quiz quiz = quizRepo.findByCode(quizCode);
+		Result r = new Result();
+		if(quiz!=null){
+			r.setStatus(Status.SUCCESS);
+			r.setResult(quiz);
+		}else{
+			r.setStatus(Status.FAIL);
+			r.setMessage("Not Found");
+		}
 		return r;
 	}
 	

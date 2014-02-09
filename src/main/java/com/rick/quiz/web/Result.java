@@ -17,7 +17,9 @@ public class Result {
 	private Object result;
 
 	private String message;
-	
+	public Result(){
+		
+	}
 	public Result(Status status){
 		this.status = status;
 	}
