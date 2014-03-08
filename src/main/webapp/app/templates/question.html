@@ -1,0 +1,40 @@
+<% var preIdx=currIdx - 1; var nextIdx=currIdx + 1; preIdx=preIdx<0?0:preIdx; nextIdx=nextIdx+1; console.log( 'preIdx: ',preIdx, ' nextIdx: ',nextIdx, 'count: ', count); %>
+    <div class="question-wrapper">
+        <div class="question-name">
+            <%=currIdx+1%>:
+                <%=question.name%>
+        </div>
+        <div class="question-options">
+            <%_.each(question.options, function(option){%>
+                <div class="option">
+                    <input name="option" type="radio" value="<%=option%>" <% console.log(question.userAnswers); if(question.userAnswers && option===question.userAnswers[0]){%>checked
+                    <%}%>>
+                        <%=option%>
+                </div>
+                <%});%>
+        </div>
+
+        <div class="question-ctrls">
+            <div class="question-timerWrapper">计时 "
+                <span id="question-timer"></span>"</div>
+            <div class="question-navigation">
+                <a href="javascript:void(0)" class="preq">上一题</a>
+                <span>
+                    <select id="question-select">
+                        <%_.each(questions, function(question, idx){%>
+                            <option value="<%=idx%>" <%if(currIdx==idx){%>selected
+                                <%}%>>
+                                    <%=idx+1%>
+                            </option>
+                            <%});%>
+                    </select>
+                </span>
+                <a href="javascript:void(0)" class="nextq">
+                    <% if(nextIdx<=count){ %>下一题
+                        <%}else{%>
+                            提交
+                            <%}%>
+                </a>
+            </div>
+        </div>
+    </div>

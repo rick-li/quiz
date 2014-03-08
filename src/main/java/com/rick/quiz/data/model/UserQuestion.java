@@ -5,12 +5,14 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 public class UserQuestion {
+	
+	//question name
+	String name;
+	
 	List<String> options = Lists.newArrayList();
+	List<String> userAnswers = Lists.newArrayList();
+	List<String> rightAnswer = Lists.newArrayList();
 	
-	int rightOpt;
-	
-	int userOpt;
-
 	public List<String> getOptions() {
 		return options;
 	}
@@ -19,21 +21,37 @@ public class UserQuestion {
 		this.options = options;
 	}
 
-	public int getRightOpt() {
-		return rightOpt;
+	public String getName() {
+		return name;
 	}
 
-	public void setRightOpt(int rightOpt) {
-		this.rightOpt = rightOpt;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public int getUserOpt() {
-		return userOpt;
+	public List<String> getUserAnswers() {
+		return userAnswers;
 	}
 
-	public void setUserOpt(int userOpt) {
-		this.userOpt = userOpt;
+	public void setUserAnswers(List<String> userAnswers) {
+		this.userAnswers = userAnswers;
 	}
+
+	public List<String> getRightAnswer() {
+		return rightAnswer;
+	}
+
+	public void setRightAnswer(List<String> rightAnswer) {
+		this.rightAnswer = rightAnswer;
+	}
+
+	@Override
+	public String toString() {
+		return "UserQuestion [name=" + name + ", options=" + options
+				+ ", userAnswers=" + userAnswers + ", rightAnswer="
+				+ rightAnswer + "]";
+	}
+	
 	
 	
 }

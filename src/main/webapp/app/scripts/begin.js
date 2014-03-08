@@ -1,6 +1,7 @@
 define(function(require, exports) {
-    exports.render = function(quiz) {
-    	$('#begin')
-    }
-
+	
+	exports.render = function(tpl, quiz) {
+		var h = tpl(quiz)	
+        $('#content').html(h);
+    };
 });

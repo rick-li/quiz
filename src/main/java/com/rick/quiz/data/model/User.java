@@ -1,32 +1,41 @@
 package com.rick.quiz.data.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 @Document(collection = "user")
 public class User {
 	@Id
 	String id;
 	
-	List<QuizFormField> formFields = Lists.newArrayList();
+	Map<String, String> userInfo = Maps.newHashMap();
 	
 	@DBRef
 	List<UserQuiz> userQuizs = Lists.newArrayList();
 
-	public List<QuizFormField> getFormFields() {
-		return formFields;
+	public String getId() {
+		return id;
 	}
 
-	public void setFormFields(List<QuizFormField> formFields) {
-		this.formFields = formFields;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	
+	public Map<String, String> getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(Map<String, String> userInfo) {
+		this.userInfo = userInfo;
+	}
+
 	public List<UserQuiz> getUserQuizs() {
 		return userQuizs;
 	}

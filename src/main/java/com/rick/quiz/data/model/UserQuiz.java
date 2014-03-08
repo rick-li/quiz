@@ -7,14 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.common.collect.Lists;
 
-
 @Document(collection = "user-quiz")
 public class UserQuiz {
 	
 	@Id
 	String id;
 	
-	String quizId;
+	String quizCode;
 	
 	String quizName;
 	
@@ -22,7 +21,7 @@ public class UserQuiz {
 	
 	int secondsUsed;
 	
-	List<UserQuestion> questions = Lists.newArrayList();
+	List<UserQuestion> userQuestions = Lists.newArrayList();
 
 	public String getId() {
 		return id;
@@ -32,12 +31,12 @@ public class UserQuiz {
 		this.id = id;
 	}
 
-	public String getQuizId() {
-		return quizId;
+	public String getQuizCode() {
+		return quizCode;
 	}
 
-	public void setQuizId(String quizId) {
-		this.quizId = quizId;
+	public void setQuizCode(String quizCode) {
+		this.quizCode = quizCode;
 	}
 
 	public String getQuizName() {
@@ -64,12 +63,19 @@ public class UserQuiz {
 		this.secondsUsed = secondsUsed;
 	}
 
-	public List<UserQuestion> getQuestions() {
-		return questions;
+	public List<UserQuestion> getUserQuestions() {
+		return userQuestions;
 	}
 
-	public void setQuestions(List<UserQuestion> questions) {
-		this.questions = questions;
+	public void setUserQuestions(List<UserQuestion> userQuestions) {
+		this.userQuestions = userQuestions;
+	}
+
+	@Override
+	public String toString() {
+		return "UserQuiz [id=" + id + ", quizCode=" + quizCode + ", quizName="
+				+ quizName + ", score=" + score + ", secondsUsed="
+				+ secondsUsed + ", userQuestions=" + userQuestions + "]";
 	}
 
 }

@@ -1,5 +1,9 @@
 package com.rick.quiz.data.repo;
 
-public class UserRepo {
+import org.springframework.data.repository.CrudRepository;
+
+import com.rick.quiz.data.model.User;
+
+public interface UserRepo extends CrudRepository<User, String>{
 
 }

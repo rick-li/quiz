@@ -59,9 +59,9 @@
                                             </thead>
                                             <tr ng-repeat="item in quiz.formFields" ng-click="setSelectedFormField(item)" ng-class="{success:selectedFormField === item}">
 
-                                                <td>{{item.type.name}}</td>
+                                                <td>{{item.name}}</td>
                                                 <td>
-                                                    <input type="checkbox" class="" ng-model="item.isRequired"></input>
+                                                    <input type="checkbox" class="" ng-model="item.required"></input>
                                                 </td>
                                                 <td>
 

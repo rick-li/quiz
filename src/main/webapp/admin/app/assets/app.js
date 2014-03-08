@@ -704,7 +704,7 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
 
             var foundFormField = _.findWhere(result, {
-                id: formField.type.id
+                id: formField.typeId
             });
             if (foundFormField) {
                 var idx = result.indexOf(foundFormField);
@@ -745,12 +745,13 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     });
 
     $scope.addFormField = function(item) {
-
+        console.log(item);
         $scope.quiz.formFields || ($scope.quiz.formFields = []);
         if ($scope.quiz.formFields.indexOf(item) == -1) {
             $scope.quiz.formFields.push({
-                isRequired: false,
-                type: item
+                required: false,
+                typeId: item.id,
+                name: item.name
             });
         }
         calculateRemainFormFields();

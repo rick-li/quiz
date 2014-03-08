@@ -3,23 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Quiz</title>
 
+    <link rel="stylesheet" href="styles/app.css">
+    <!-- <link rel="stylesheet" href="lib/jquery-ui/themes/base/jquery-ui.css"> -->
 
-    <link rel="stylesheet" href="lib/jquery-ui/themes/base/jquery-ui.css">
-    <script>
-    </script>
 </head>
 
 <body>
+    <div id="container">
+        <div id="header">
+            <div class="header-logo"></div>
+            <div class="header-title">为什么啊</div>
+        </div>
+        <div id="content">
+
+
+        </div>
+        <div id="footer">
+            <div class="footer-logo"></div>
+        </div>
+    </div>
+    <script src="lib/json3.min.js"></script>
     <script src="lib/promise-0.1.1.min.js"></script>
     <script src="lib/sea-debug.js"></script>
     <script>
+    //polyfill console
     if (typeof console === 'undefined') {
         window.console = {
             log: function() {}
         };
     }
+    // //polyfill curry
+    Function.prototype.curry = function() {
+        var fn = this,
+            args = Array.prototype.slice.call(arguments);
+        return function() {
+            return fn.apply(this, args.concat(
+                Array.prototype.slice.call(arguments)));
+        };
+    };
     seajs.config({
         base: ".",
         alias: {
@@ -27,11 +50,12 @@
             "jquery-migrate": "lib/jquery-migrate-1.2.1.js",
             "underscore": "lib/underscore-min.js",
             "bbq": "lib/jquery.ba-bbq.min.js",
-            "jquery-ui-widget": "lib/jquery-ui/ui/jquery.ui.widget.js",
+            //"jquery-ui-widget": "lib/jquery-ui/ui/jquery.ui.widget.js",
             "app": "scripts/app.js",
             "begin": "scripts/begin.js",
-            "register": "scripts/user.js",
-            "question": "scripts/question.js"
+            "register": "scripts/register.js",
+            "question": "scripts/question.js",
+            "result": "scripts/result.js"
         },
         preload: ['jquery', 'underscore']
     });
@@ -49,11 +73,6 @@
     <script src="//localhost:7777/livereload.js"></script>
 
 </body>
-<script id="beginTpl" type="text/html">
-<div> 
-{{name}} 
-</div>   <div>{{description}}</div >
-</script>
-<script id="registerTpl" type="text/html"></script>
+
 
 </html>
