@@ -59,6 +59,7 @@ define(['result'], function(require, exports) {
                 var newQuestionIdx = "";
                 $('#question-select option:selected').each(function() {
                     newQuestionIdx = $(this).val();
+                    changeQuestion(newQuestionIdx);
                 });
                 console.log('selected question ' + newQuestionIdx);
             });
