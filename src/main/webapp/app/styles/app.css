@@ -125,34 +125,38 @@ table {
     min-width: 290px;
 }
 #header {
-    height: 362px;
+    height: 161px;
     background: url('../images/headerBG.png') repeat-x 0 100% white;
     width: 100%;
 }
 .header-title {
     font-size: 35px;
-    margin-top: 80px;
+    margin-top: 40px;
     text-align: center;
 }
 .header-logo {
     background: url('../images/headerLogo.png') no-repeat 0 100% transparent;
-    width: 290px;
-    height: 232px;
+    width: 162px;
+    height: 100px;
     margin: 0 auto;
+}
+#container {
 }
 #content {
     background: #f9fae8;
     width: 100%;
+    padding-top: 40px;
+    padding-bottom: 10px;
     text-align: center;
 }
 #footer {
-    height: 160px;
+    height: 125px;
     background: white;
     width: 100%;
 }
 .footer-logo {
     background: url('../images/footerLogo.png') no-repeat 0 100% transparent;
-    width: 270px;
-    height: 140px;
+    width: 204px;
+    height: 98px;
     margin: 0 auto;
 }
