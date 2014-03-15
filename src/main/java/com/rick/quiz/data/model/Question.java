@@ -17,7 +17,10 @@ public class Question {
 	List<String> options;
 
 	String questionSetId;
-	
+
+	// full image path is ${user.home}/image.dir/imageFile
+	String imageFileName;
+
 	public String getId() {
 		return id;
 	}
@@ -33,7 +36,6 @@ public class Question {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public List<String> getOptions() {
 		return options;
@@ -51,6 +53,14 @@ public class Question {
 		this.questionSetId = questionSetId;
 	}
 
+	public String getImageFileName() {
+		return imageFileName;
+	}
+
+	public void setImageFileName(String imageFileName) {
+		this.imageFileName = imageFileName;
+	}
+
 	public List<String> getRightAnswer() {
 		return rightAnswer;
 	}
@@ -58,8 +68,5 @@ public class Question {
 	public void setRightAnswer(List<String> rightAnswer) {
 		this.rightAnswer = rightAnswer;
 	}
-
-	
-	
 
 }

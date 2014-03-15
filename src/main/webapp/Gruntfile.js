@@ -111,6 +111,7 @@ module.exports = function(grunt) {
                     'lib/angular/angular.min.js',
                     'lib/angular/angular-route.min.js',
                     'lib/angular/angular-resource.min.js',
+                    'lib/angular-file-upload.js',
                     'lib/underscore-min.js',
 
                     'admin/app/scripts/app.js',
@@ -207,7 +208,7 @@ module.exports = function(grunt) {
     //development
     // grunt.registerTask('dev', ['update', 'connect:devserver', 'watch:assets']);
     grunt.registerTask('adminDev', ['concat:adminStyles', 'concat:adminScripts', 'connect:devserver', 'watch:adminAssets']);
-    grunt.registerTask('clientDev', ['concat:clientStyles', 'concat:clientScripts','connect:devserver', 'watch:clientAssets']);
+    grunt.registerTask('clientDev', ['concat:clientStyles', 'concat:clientScripts', 'connect:devserver', 'watch:clientAssets']);
 
     //server daemon
     grunt.registerTask('serve', ['connect:webserver']);

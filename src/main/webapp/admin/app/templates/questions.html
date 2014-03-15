@@ -58,7 +58,13 @@
                     <label for="questionsetName">问题</label>
                     <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="selectedItem.name" required>
                 </div>
-
+                <div class="form-group">
+                    <label for="">图片</label>
+                    <input type="file" class="form-control" id="questionImage" ng-file-select="onFileSelect($files)" />
+                    <div>
+                        <image ng-src="{{imageBasePath}}/{{selectedItem.imageFileName}}">
+                    </div>
+                </div>
                 <div class="form-group">
 
                     <label for="questionsetName">选项</label>

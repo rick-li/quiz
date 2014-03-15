@@ -1,14 +1,14 @@
 package com.rick.quiz.web;
 
 public class Result {
-	
-	public static Result Success(Object d){
+
+	public static Result Success(Object d) {
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(d);
 		return r;
 	}
-	
-	enum Status {
+
+	public enum Status {
 		SUCCESS, FAIL
 	}
 
@@ -17,13 +17,15 @@ public class Result {
 	private Object result;
 
 	private String message;
-	public Result(){
-		
+
+	public Result() {
+
 	}
-	public Result(Status status){
+
+	public Result(Status status) {
 		this.status = status;
 	}
-	
+
 	public Status getStatus() {
 		return status;
 	}
@@ -47,7 +49,5 @@ public class Result {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
-	
 
 }

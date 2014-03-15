@@ -141,6 +141,9 @@ public class UserController {
 		log.debug("Total answers: " + totalAnswers);
 		log.debug("Score is: {}, eclapsed is  ", userQuiz.getSecondsUsed());
 
+		userQuiz.setScore(score);
+		userQuizRepo.save(userQuiz);
+
 		Map<String, String> resultMap = Maps.newHashMap();
 		resultMap.put("score", score * 100 + "");
 		resultMap.put("elapsed", userQuiz.getSecondsUsed() + "");

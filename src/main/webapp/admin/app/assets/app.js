@@ -224,6 +224,195 @@ d.isArray?[]:new b(t),y={},w=d.interceptor&&d.interceptor.response||e,A=d.interc
 B=f.copy,u=f.isFunction;n.prototype={setUrlParams:function(m,h,k){var r=this,e=k||r.template,b,n,d=r.urlParams={};s(e.split(/\W/),function(c){if("hasOwnProperty"===c)throw v("badname");!/^\d+$/.test(c)&&(c&&RegExp("(^|[^\\\\]):"+c+"(\\W|$)").test(e))&&(d[c]=!0)});e=e.replace(/\\:/g,":");h=h||{};s(r.urlParams,function(c,d){b=h.hasOwnProperty(d)?h[d]:r.defaults[d];f.isDefined(b)&&null!==b?(n=encodeURIComponent(b).replace(/%40/gi,"@").replace(/%3A/gi,":").replace(/%24/g,"$").replace(/%2C/gi,",").replace(/%20/g,
 "%20").replace(/%26/gi,"&").replace(/%3D/gi,"=").replace(/%2B/gi,"+"),e=e.replace(RegExp(":"+d+"(\\W|$)","g"),n+"$1")):e=e.replace(RegExp("(/?):"+d+"(\\W|$)","g"),function(a,c,b){return"/"==b.charAt(0)?b:c+b})});e=e.replace(/\/+$/,"");e=e.replace(/\/\.(?=\w+($|\?))/,".");m.url=e.replace(/\/\\\./,"/.");s(h,function(b,d){r.urlParams[d]||(m.params=m.params||{},m.params[d]=b)})}};return w}])})(window,window.angular);
 //# sourceMappingURL=angular-resource.min.js.map
+;/**!
+ * AngularJS file upload/drop directive with http post and progress
+ * @author  Danial  <danial.farid@gmail.com>
+ * @version 1.2.9
+ */
+(function() {
+	
+var angularFileUpload = angular.module('angularFileUpload', []);
+
+angularFileUpload.service('$upload', ['$http', '$rootScope', '$timeout', function($http, $rootScope, $timeout) {
+	function sendHttp(config) {
+		config.method = config.method || 'POST';
+		config.headers = config.headers || {};
+		config.transformRequest = config.transformRequest || function(data) {
+			if (window.ArrayBuffer && data instanceof ArrayBuffer) {
+				return data;
+			}
+			return $http.defaults.transformRequest[0](data);
+		};
+		
+		if (window.XMLHttpRequest.__isShim) {
+			config.headers['__setXHR_'] = function() {
+				return function(xhr) {
+					config.__XHR = xhr;
+					xhr.upload.addEventListener('progress', function(e) {
+						if (config.progress) {
+							$timeout(function() {
+								if(config.progress) config.progress(e);
+							});
+						}
+					}, false);
+					//fix for firefox not firing upload progress end, also IE8-9
+					xhr.upload.addEventListener('load', function(e) {
+						if (e.lengthComputable) {
+							$timeout(function() {
+								if(config.progress) config.progress(e);
+							});
+						}
+					}, false);
+				}	
+			};
+		}
+			
+		var promise = $http(config);
+		
+		promise.progress = function(fn) {
+			config.progress = fn;
+			return promise;
+		};		
+		promise.abort = function() {
+			if (config.__XHR) {
+				$timeout(function() {
+					config.__XHR.abort();
+				});
+			}
+			return promise;
+		};		
+		promise.then = (function(promise, origThen) {
+			return function(s, e, p) {
+				config.progress = p || config.progress;
+				var result = origThen.apply(promise, [s, e, p]);
+				result.abort = promise.abort;
+				result.progress = promise.progress;
+				return result;
+			};
+		})(promise, promise.then);
+		
+		return promise;
+	};
+	this.upload = function(config) {
+		config.headers = config.headers || {};
+		config.headers['Content-Type'] = undefined;
+		config.transformRequest = config.transformRequest || $http.defaults.transformRequest;
+		var formData = new FormData();
+		if (config.data) {
+			for (var key in config.data) {
+				var val = config.data[key];
+				if (!config.formDataAppender) {
+					if (typeof config.transformRequest == 'function') {
+						val = config.transformRequest(val);
+					} else {
+						for (var i = 0; i < config.transformRequest.length; i++) {
+							var fn = config.transformRequest[i];
+							if (typeof fn == 'function') {
+								val = fn(val);
+							}
+						}
+					}
+					formData.append(key, val);
+				} else {
+					config.formDataAppender(formData, key, val);
+				}
+			}
+		}
+		config.transformRequest =  angular.identity;
+		
+		var fileFormName = config.fileFormDataName || 'file';
+		
+		if (Object.prototype.toString.call(config.file) === '[object Array]') {
+			var isFileFormNameString = Object.prototype.toString.call(fileFormName) === '[object String]'; 
+			for (var i = 0; i < config.file.length; i++) {						         
+				formData.append(isFileFormNameString ? fileFormName + i : fileFormName[i], config.file[i], config.file[i].name);
+			}
+		} else {
+			formData.append(fileFormName, config.file, config.file.name);
+		}
+		
+		config.data = formData;
+		
+		return sendHttp(config);
+	};
+	this.http = function(config) {
+		return sendHttp(config);
+	}
+}]);
+
+angularFileUpload.directive('ngFileSelect', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
+	return function(scope, elem, attr) {
+		var fn = $parse(attr['ngFileSelect']);
+		elem.bind('change', function(evt) {
+			var files = [], fileList, i;
+			fileList = evt.target.files;
+			if (fileList != null) {
+				for (i = 0; i < fileList.length; i++) {
+					files.push(fileList.item(i));
+				}
+			}
+			$timeout(function() {
+				fn(scope, {
+					$files : files,
+					$event : evt
+				});
+			});
+		});
+		elem.bind('click', function(){
+			this.value = null;
+		});
+	};
+} ]);
+
+angularFileUpload.directive('ngFileDropAvailable', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
+	return function(scope, elem, attr) {
+		if ('draggable' in document.createElement('span')) {
+			var fn = $parse(attr['ngFileDropAvailable']);
+			$timeout(function() {
+				fn(scope);
+			});
+		}
+	};
+} ]);
+
+angularFileUpload.directive('ngFileDrop', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
+	return function(scope, elem, attr) {
+		if ('draggable' in document.createElement('span')) {
+			var cancel = null;
+			var fn = $parse(attr['ngFileDrop']);
+			elem[0].addEventListener("dragover", function(evt) {
+				$timeout.cancel(cancel);
+				evt.stopPropagation();
+				evt.preventDefault();
+				elem.addClass(attr['ngFileDragOverClass'] || "dragover");
+			}, false);
+			elem[0].addEventListener("dragleave", function(evt) {
+				cancel = $timeout(function() {
+					elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
+				});
+			}, false);
+			elem[0].addEventListener("drop", function(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+				elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
+				var files = [], fileList = evt.dataTransfer.files, i;
+				if (fileList != null) {
+					for (i = 0; i < fileList.length; i++) {
+						files.push(fileList.item(i));
+					}
+				}
+				$timeout(function() {
+					fn(scope, {
+						$files : files,
+						$event : evt
+					});
+				});
+			}, false);
+		}
+	};
+} ]);
+
+})();
 ;//     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -234,7 +423,7 @@ B=f.copy,u=f.isFunction;n.prototype={setUrlParams:function(m,h,k){var r=this,e=k
 
 
 
-;var app = angular.module('myApp', ['ngRoute', 'ngResource']);
+;var app = angular.module('myApp', ['ngRoute', 'ngResource', 'angularFileUpload']);
 
 app.constant('TPL_PATH', 'templates')
 
@@ -448,10 +637,12 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
 
         $location.path('/questions/qsId/' + item.id);
     };
-});;app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $routeParams) {
+});;app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $routeParams, $upload) {
     $log.log('QuestionCtrl ', $routeParams['qsId']);
+
     $scope.qsId = $routeParams['qsId'];
 
+    $scope.imageBasePath = "/quiz/mvc/images/";
     $scope.newItemCreated = false;
     $scope.newOptionCreated = false;
 
@@ -469,13 +660,18 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
         Question.query({
             qsId: $routeParams['qsId']
         }, function(data) {
-            $log.log('result is ', data)
+            $log.log('result is ', data);
             $scope.questions = data.result;
-            $scope.selectedItem = {
-                options: [],
-                rightAnswer: []
-            };
-            $scope.selectedOption = null;
+            if ($scope.questions.length > 0) {
+                $scope.selectedItem = $scope.questions[0];
+            } else {
+                $scope.selectedItem = {
+                    options: [],
+                    rightAnswer: []
+                };
+                $scope.selectedOption = null;
+            }
+
         });
     };
     $scope.query();
@@ -489,7 +685,7 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
         $scope.newItemCreated = true;
         $timeout(function() {
             $scope.newItemCreated = false;
-        }, 3000)
+        }, 3000);
         $scope.selectedItem = {};
     };
 
@@ -497,7 +693,7 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
         $scope.newOptionCreated = true;
         $timeout(function() {
             $scope.newOptionCreated = false;
-        }, 3000)
+        }, 3000);
         $scope.selectedOption = null;
     };
 
@@ -519,6 +715,39 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
     $scope.deleteOpt = function(opt) {
         var opts = $scope.selectedItem.options;
         opts.splice(opts.indexOf(opt), 1);
+    };
+
+    $scope.onFileSelect = function($files) {
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var file = $files[i];
+            $scope.upload = $upload.upload({
+                url: '/quiz/mvc/questions/uploadimage', //upload.php script, node.js route, or servlet url
+                // method: POST or PUT,
+                // headers: {'headerKey': 'headerValue'},
+                // withCredentials: true,
+                data: {
+
+                },
+                file: file,
+                // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
+                /* set file formData name for 'Content-Desposition' header. Default: 'file' */
+                //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
+                /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
+                //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
+            }).progress(function(evt) {
+                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+            }).success(function(data, status, headers, config) {
+                // file is uploaded successfully
+                if (data.status != 'SUCCESS') {
+                    alert("图片上传失败");
+                    return;
+                }
+
+
+                $scope.selectedItem.imageFileName = data.result.filename;
+            });
+        }
     };
 
     $scope.addOpt = function(opt) {
@@ -550,6 +779,7 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             return;
         }
         item.questionSetId = $scope.qsId;
+        item.imageFileName = $scope.selectedItem.imageFileName;
         Question.save(item, function() {
             $scope.query();
         });
@@ -756,7 +986,6 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         }
         calculateRemainFormFields();
     };
-
 
     $scope.setSelectedFormField = function(item) {
         $scope.selectedFormField = item;
