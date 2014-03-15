@@ -1,5 +1,6 @@
 package com.rick.quiz.data.model;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,8 @@ public class Question {
 
 	// full image path is ${user.home}/image.dir/imageFile
 	String imageFileName;
+
+	Date lastUpdate;
 
 	public String getId() {
 		return id;
@@ -59,6 +62,14 @@ public class Question {
 
 	public void setImageFileName(String imageFileName) {
 		this.imageFileName = imageFileName;
+	}
+
+	public Date getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public List<String> getRightAnswer() {

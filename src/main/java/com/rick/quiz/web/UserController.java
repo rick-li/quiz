@@ -102,7 +102,8 @@ public class UserController {
 					int qsNum = (int) (totalNum * qa.getPercentage() / 100);
 					QuestionSet qs = qa.getQs();
 					List<Question> qsList = Lists.newArrayList(questionRepo
-							.findByQuestionSetId(qs.getId()));
+							.findByQuestionSetIdOrderByLastUpdateDesc(qs
+									.getId()));
 					Collections.shuffle(qsList);
 					int size = qsList.size();
 					qsList = qsList.subList(0, size < qsNum ? size : qsNum);

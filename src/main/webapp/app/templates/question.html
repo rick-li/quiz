@@ -4,6 +4,9 @@
             <%=currIdx+1%>:
                 <%=question.name%>
         </div>
+        <div class="question-image">
+            <img src="/quiz/mvc/images/<%=question.imageFileName%>" />
+        </div>
         <div class="question-options">
             <%_.each(question.options, function(option){%>
                 <div class="option">

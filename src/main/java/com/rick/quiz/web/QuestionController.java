@@ -1,6 +1,7 @@
 package com.rick.quiz.web;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,8 @@ public class QuestionController {
 	@RequestMapping(method = RequestMethod.GET)
 	public Result getQuestionsByQuestionSetId(
 			@RequestParam("questionSetId") String qsId) {
-		List<Question> questions = qr.findByQuestionSetId(qsId);
+		List<Question> questions = qr
+				.findByQuestionSetIdOrderByLastUpdateDesc(qsId);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(questions);
 		return r;
@@ -88,6 +90,7 @@ public class QuestionController {
 	@ResponseBody
 	@RequestMapping(value = { "", "/{id}" }, method = RequestMethod.POST)
 	public Result createOrUpdateQuestion(@RequestBody Question pq) {
+		pq.setLastUpdate(new Date());
 		Question q = qr.save(pq);
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(q.getId());

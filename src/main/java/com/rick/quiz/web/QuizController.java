@@ -37,7 +37,6 @@ public class QuizController {
 	@Autowired
 	private QuestionSetInnerRepo qsRepo;
 
-	
 	@ResponseBody
 	@RequestMapping(value = "/{id}/questions", method = RequestMethod.GET)
 	public Result getQuestionsByQuizId(@PathVariable("id") String id) {
@@ -48,8 +47,9 @@ public class QuizController {
 		for (QuestionSetAssociation set : sets) {
 			float percent = set.getPercentage();
 			int qsNum = (int) (totalNum * percent / 100);
-			List<Question> qsQuestions = questionRepo.findByQuestionSetId(set
-					.getQs().getId());
+			List<Question> qsQuestions = questionRepo
+					.findByQuestionSetIdOrderByLastUpdateDesc(set.getQs()
+							.getId());
 			// random ordered
 			Collections.shuffle(qsQuestions);
 			qsNum = qsNum <= qsQuestions.size() ? qsNum : qsQuestions.size();
@@ -59,8 +59,7 @@ public class QuizController {
 		r.setResult(totalQuestionList);
 		return r;
 	}
-	
-	
+
 	@ResponseBody
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public Result getQuizList() {
