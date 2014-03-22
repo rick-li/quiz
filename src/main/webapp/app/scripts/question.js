@@ -32,7 +32,10 @@ define(['result'], function(require, exports) {
                 count: questionList.length,
                 question: question,
                 questions: questionList,
-                quiz: quiz
+                quiz: quiz,
+                getImageStyle: function(question) {
+                    return question.imageFileName ? 'question-image' : 'hidden';
+                }
             });
             $('#content').html(h);
 
@@ -66,7 +69,8 @@ define(['result'], function(require, exports) {
         }
 
         function submit() {
-            if (!checkAllAnswers) {
+
+            if (!checkAllAnswers()) {
                 alert("提交前请选择所有答案");
                 return false;
             }
@@ -141,10 +145,12 @@ define(['result'], function(require, exports) {
 
         function checkAllAnswers() {
 
-            var result = _.find(questionList, function(question) {
-                return (!question.userAnwsers || question.userAnwsers.length === 0);
+            var isFound = _.find(questionList, function(question) {
+
+                return (!question.userAnswers || question.userAnswers.length === 0);
             });
-            return _.isUndefined(result);
+            console.log('is found ', isFound);
+            return _.isUndefined(isFound);
         }
 
         function checkAnswer(currentIdx) {
@@ -153,7 +159,7 @@ define(['result'], function(require, exports) {
                 alert('请选择答案');
                 return false;
             }
-            questionList[currentIdx].userAnwsers = [selectedValue];
+            questionList[currentIdx].userAnswers = [selectedValue];
             return true;
         }
 
@@ -167,6 +173,8 @@ define(['result'], function(require, exports) {
                     var remains = durationInMillSec - elapsed;
                     var mins = parseInt(remains / (1000 * 60));
                     var secs = parseInt((remains - (mins * 1000 * 60)) / 1000);
+                    mins = mins < 10 ? '0' + mins : mins;
+                    secs = secs < 10 ? '0' + secs : secs;
                     if (durationInMillSec > elapsed) {
                         $('#question-timer').text(mins + ':' + secs);
                         executor();
@@ -182,4 +190,5 @@ define(['result'], function(require, exports) {
             console.log(error);
         }
     };
+
 });

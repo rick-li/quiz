@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="qunit-1.14.0.css" />
+
+    </script>
+</head>
+
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script type="text/javascript" src="../lib/jquery.min.js"></script>
+    <script src="qunit-1.14.0.js"></script>
+    <script src="sinon-1.9.0.js"></script>
+    <script>
+    test("hello ", function() {
+        ok(1 == '1', 'passed!');
+    });
+
+    test("a test", function() {
+        expect(2);
+
+        function calc(x, operation) {
+            return operation(x);
+        }
+
+        var result = calc(2, function(x) {
+            ok(true, "calc() calls operation function");
+            return x * x;
+        });
+
+        equal(result, 4, "2 square equals 4");
+    });
+
+
+    test('click body', function() {
+        var body = $('body');
+        body.on('click', function() {
+            ok(true, "body was clicked.");
+        });
+
+        body.trigger('click');
+    });
+
+    asyncTest("async test", function() {
+
+        setTimeout(function() {
+            ok(true, "timeout expected.");
+            start();
+        }, 100);
+    });
+    </script>
+
+</body>
+
+</html>

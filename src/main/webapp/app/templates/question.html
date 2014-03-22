@@ -4,7 +4,7 @@
             <%=currIdx+1%>:
                 <%=question.name%>
         </div>
-        <div class="question-image">
+        <div class="<%=getImageStyle(question)%>">
             <img src="/quiz/mvc/images/<%=question.imageFileName%>" />
         </div>
         <div class="question-options">
@@ -32,7 +32,7 @@
                             <%});%>
                     </select>
                 </span>
-                <a href="javascript:void(0)" class="nextq">
+                <a href="javascript:void(0);" class="nextq">
                     <% if(nextIdx<=count){ %>下一题
                         <%}else{%>
                             提交

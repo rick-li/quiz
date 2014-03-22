@@ -32,10 +32,10 @@ table {
  body {
     font-family: SimSun, 宋体, 'Arial Narrow', HELVETICA;
 }
-.header {
+.hidden {
+    display:none;
 }
-.content {
-    width: 100%;
+.header {
 }
 .footer {
 }
@@ -80,7 +80,7 @@ table {
 }
 /*Start Questions*/
  .question-wrapper {
-    width: 300px;
+    width: 400px;
     margin: 0 auto;
 }
 .question-name {
@@ -145,6 +145,7 @@ table {
 #content {
     background: #f9fae8;
     width: 100%;
+    min-height: 600px;
     padding-top: 40px;
     padding-bottom: 10px;
     text-align: center;

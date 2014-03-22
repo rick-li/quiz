@@ -3,7 +3,9 @@ define(function(require, exports) {
         var userTpl = $('#register');
         var content = tpl(quiz);
         $('#content').html(content);
-        $('#chgCapchaBtn').on('click', function() {
+
+
+        $('.capcha, #chgCapchaBtn').on('click', function() {
             var capSrc = $('.capcha').attr('src');
             $('.capcha').attr('src', capSrc);
         });
