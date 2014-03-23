@@ -55,7 +55,7 @@ define(['question-item', 'result'], function(require, exports) {
                         return question.imageFileName ? 'question-image' : 'hidden';
                     }
                 });
-                console.log(questionItemHtml);
+                // console.log(questionItemHtml);
                 $('.question-item').html(questionItemHtml);
                 updateQuestionCtrl(idx);
             });
@@ -179,10 +179,16 @@ define(['question-item', 'result'], function(require, exports) {
         //return true for right, false for wrong.
 
         function checkAllAnswers() {
-
+            if (!checkAnswer(currentIdx)) {
+                return;
+            }
+            console.log(questionList);
             var isFound = _.find(questionList, function(question) {
 
-                return (!question.userAnswers || question.userAnswers.length === 0);
+                if (!question.userAnswers || question.userAnswers.length === 0) {
+                    console.log('question with no answer: ', question);
+                    return true;
+                }
             });
             console.log('is found ', isFound);
             return _.isUndefined(isFound);
