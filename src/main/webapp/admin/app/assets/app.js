@@ -472,42 +472,38 @@ app.directive('ckeditor', function($log) {
     return {
         restrict: 'E',
         scope: {
-            content: '='
+            content: '=',
+            ckheight: '@'
         },
         link: function(scope, elm, attr) {
+
             $log.log('attr is ', attr);
 
             var ck = CKEDITOR.replace(elm[0], {
-                height: '300px',
+                height: attr['ckheight'],
                 language: 'zh-cn'
             });
 
-            var contentUnWatcher = scope.$watch('content', function(newContent) {
-                $log.log('content changed, ', newContent);
-                if (newContent) {
-                    ck.on('instanceReady', function() {
+            ck.on('instanceReady', function() {
+                ck.setData(scope.$apply('content'));
+                scope.$watch('content', function(newContent) {
+                    if (newContent !== ck.getData()) {
+                        $log.log('content changed, "', newContent, '"');
                         ck.setData(newContent);
-                        contentUnWatcher();
+                    }
+                });
 
-                    });
-                }
-            })
+                ck.on('change', updateModel);
+                ck.on('key', updateModel);
+
+            });
 
 
-
-
-                function updateModel() {
-                    $log.log('updating ', ck.getData());
-                    scope.$apply(function() {
-
-                        scope.content = ck.getData();
-                    });
-                }
-
-            ck.on('change', updateModel);
-            ck.on('key', updateModel);
-            ck.on('dataReady', updateModel);
-
+            function updateModel() {
+                scope.$apply(function() {
+                    scope.content = ck.getData();
+                });
+            }
         }
     };
 });
@@ -900,16 +896,18 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     }
 
 });;app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $timeout, $location, QuestionSetService, QuizService, FormTypeService, Status, MaskService) {
-    $log.log('quiz editor');
+    $log.log('======>quiz editor');
     $scope.selectedFormField = {};
     $scope.chosenFieldType = {};
     $scope.selectedQuestionSet = {};
     $scope.remainQuestionSets = [];
     $scope.remainFormFields = [];
+
     var query = function() {
         QuizService.get({
             id: quizId
         }, function(data) {
+
             $scope.quiz = data.result;
             calculateRemainFormFields();
             calculateRemainQuestionSets();
@@ -964,11 +962,13 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     }
 
     QuestionSetService.query(function(data) {
+
         $scope.questionSets = data.result;
         calculateRemainQuestionSets();
     });
 
     FormTypeService.query(function(data) {
+
         $scope.fieldTypes = data.result;
 
         calculateRemainFormFields();

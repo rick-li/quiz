@@ -21,13 +21,15 @@
                     </div>
 
                     <%} }); %>
-                        <div class="register-field">
-                            <label>验证码：</label>
-                            <input name="capcha" type="text" />
+                        <div class="capcha">
+                            <div class="register-field">
+                                <label>验证码：</label>
+                                <input name="capcha-input" class="capcha-input" type="text" />
 
+                            </div>
+                            <image src="/quiz/mvc/user/capcha.png" class="capcha-image" />
+                            <span class="capcha-change-btn">看不清？换一个</span>
                         </div>
-                        <image src="/quiz/mvc/user/capcha.png" class="capcha" />
-                        <span id="chgCapchaBtn">看不清？换一个</span>
         </div>
 
     </div>

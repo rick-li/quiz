@@ -13,6 +13,8 @@ public class Question {
 
 	String name;
 
+	String desc;
+
 	List<String> rightAnswer;
 
 	List<String> options;
@@ -42,6 +44,14 @@ public class Question {
 
 	public List<String> getOptions() {
 		return options;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 	public void setOptions(List<String> options) {

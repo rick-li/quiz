@@ -59,10 +59,14 @@
                     <input type="text" class="form-control" id="questionsetName" placeholder="" ng-model="selectedItem.name" required>
                 </div>
                 <div class="form-group">
+                    <label for="questionDesc">问题描述</label>
+                    <ckeditor content="selectedItem.desc" ckheight="100px"></ckeditor>
+                </div>
+                <div class="form-group">
                     <label for="">图片</label>
                     <input type="file" class="form-control" id="questionImage" ng-file-select="onFileSelect($files)" />
                     <div>
-                        <image ng-src="{{imageBasePath}}/{{selectedItem.imageFileName}}">
+                        <image ng-src="{{imageBasePath}}/{{selectedItem.imageFileName}}" ng-show="selectedItem.imageFileName">
                     </div>
                 </div>
                 <div class="form-group">

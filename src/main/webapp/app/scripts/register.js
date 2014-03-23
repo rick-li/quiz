@@ -4,10 +4,18 @@ define(function(require, exports) {
         var content = tpl(quiz);
         $('#content').html(content);
 
+        $('.register-wrapper input').on('keydown', function(e) {
+            var key = e.which;
+            if (key == 13) {
+                console.log('Enter is clicked.');
+                e.preventDefault();
+            }
+        });
 
-        $('.capcha, #chgCapchaBtn').on('click', function() {
-            var capSrc = $('.capcha').attr('src');
-            $('.capcha').attr('src', capSrc);
+        $('.capcha-image, .capcha-change-btn').on('click', function() {
+            console.log('click capcha image.');
+            var capSrc = $('.capcha-image').attr('src');
+            $('.capcha-image').attr('src', capSrc);
         });
 
         $('#submitBtn').on('click', function() {
@@ -40,7 +48,7 @@ define(function(require, exports) {
             };
 
             _.each(_.keys(formJson), function(key) {
-                if (!key) {
+                if (!key || !fieldDefMap[key]) {
                     return;
                 }
                 var fieldDef = fieldDefMap[key];
@@ -61,6 +69,8 @@ define(function(require, exports) {
             }
             return result;
         }
+
+
 
         function submitForm(formJson) {
             return new Promise(function(resolve, reject) {

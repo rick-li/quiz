@@ -177,7 +177,7 @@ public class UserController {
 
 	@ResponseBody
 	@RequestMapping(value = "/getResult/{quizCode}", method = RequestMethod.GET)
-	public Result register(@PathVariable("quizCode") String quizCode,
+	public Result getResult(@PathVariable("quizCode") String quizCode,
 			HttpSession session) {
 		Result r = new Result();
 		@SuppressWarnings("unchecked")
@@ -234,7 +234,7 @@ public class UserController {
 	boolean isCapchaValid(HttpSession session, Map<String, String> userInfo) {
 		try {
 			return session.getAttribute(CAPCHA_KEY).equals(
-					userInfo.get(CAPCHA_KEY));
+					userInfo.get("capcha-input"));
 		} catch (Exception e) {
 			log.error("Unable to get Capcha.", e);
 			return false;

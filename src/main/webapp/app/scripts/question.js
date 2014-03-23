@@ -1,18 +1,21 @@
-define(['result'], function(require, exports) {
+define(['question-item', 'result'], function(require, exports) {
     exports.render = function(tpl, quiz) {
-        var questionList, elapsed, currentIdx, answers;
+        var questionList, elapsed, currentIdx, answers, timerId;
         elapsed = 0;
         answers = []; //anwser = {question:question, answer: answer}
 
         whenQuestionChange(function(idx) {
             currentIdx = idx;
-            getQuestionList(quiz).then(renderQuestion.curry(idx))['catch'](handleError);
+            renderQuestionItem(idx);
         });
 
-
-        $(window).trigger('hashchange');
-
-        startTimer(quiz.durationInMin);
+        getQuestionList(quiz).then(function(questionList) {
+            renderQuestion(questionList);
+            return Promise.resolve();
+        }).then(function() {
+            $(window).trigger('hashchange');
+            startTimer(quiz.durationInMin);
+        })['catch'](handleError);
 
         // ========== functions
 
@@ -24,18 +27,50 @@ define(['result'], function(require, exports) {
             });
         }
 
-        function renderQuestion(idx, questionList) {
+        function updateQuestionCtrl(updateIdx) {
+            var count = questionList.length;
+            var preIdx = updateIdx - 1;
+            var nextIdx = updateIdx + 1;
+            preIdx = preIdx < 0 ? 0 : preIdx;
+            nextIdx = nextIdx + 1;
+            console.log('preIdx: ', preIdx, ' nextIdx: ', nextIdx, 'count: ', count);
+            var nextqText = nextIdx > count ? '提交' : '下一题';
+            $('.nextq').text(nextqText);
+            $('#question-select option').each(function(idx, opt) {
+                if (updateIdx === idx) {
+                    $(opt).attr('selected', true);
+                }
+            });
+        }
+
+        function renderQuestionItem(idx) {
+            currentIdx = idx;
             var question = questionList[idx];
             console.log('question', question);
+            $.get('templates/question-item.html').done(function(strTpl) {
+                var questionItemHtml = _.template(strTpl)({
+                    idx: idx,
+                    question: question,
+                    getImageStyle: function(question) {
+                        return question.imageFileName ? 'question-image' : 'hidden';
+                    }
+                });
+                console.log(questionItemHtml);
+                $('.question-item').html(questionItemHtml);
+                updateQuestionCtrl(idx);
+            });
+
+        }
+
+        function renderQuestion(questionList) {
+
             var h = tpl({
-                currIdx: idx,
+                currIdx: currentIdx,
                 count: questionList.length,
-                question: question,
+
                 questions: questionList,
-                quiz: quiz,
-                getImageStyle: function(question) {
-                    return question.imageFileName ? 'question-image' : 'hidden';
-                }
+                quiz: quiz
+
             });
             $('#content').html(h);
 
@@ -68,8 +103,8 @@ define(['result'], function(require, exports) {
             });
         }
 
-        function submit() {
 
+        function submit() {
             if (!checkAllAnswers()) {
                 alert("提交前请选择所有答案");
                 return false;
@@ -164,10 +199,13 @@ define(['result'], function(require, exports) {
         }
 
         function startTimer(durationInMin) {
-            var durationInMillSec = durationInMin * 60 * 1000;
 
+            var durationInMillSec = durationInMin * 60 * 1000;
+            if (timerId) {
+                clearTimeout(timerId);
+            }
             (function executor() {
-                setTimeout(function() {
+                timerId = setTimeout(function() {
                     elapsed += 1000;
                     // console.log('elapsed: ', elapsed);
                     var remains = durationInMillSec - elapsed;
@@ -183,7 +221,6 @@ define(['result'], function(require, exports) {
                     }
                 }, 1000);
             })();
-
         }
 
         function handleError(error) {

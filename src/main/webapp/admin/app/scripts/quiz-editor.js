@@ -1,14 +1,16 @@
 app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $timeout, $location, QuestionSetService, QuizService, FormTypeService, Status, MaskService) {
-    $log.log('quiz editor');
+    $log.log('======>quiz editor');
     $scope.selectedFormField = {};
     $scope.chosenFieldType = {};
     $scope.selectedQuestionSet = {};
     $scope.remainQuestionSets = [];
     $scope.remainFormFields = [];
+
     var query = function() {
         QuizService.get({
             id: quizId
         }, function(data) {
+
             $scope.quiz = data.result;
             calculateRemainFormFields();
             calculateRemainQuestionSets();
@@ -63,11 +65,13 @@ app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $ti
     }
 
     QuestionSetService.query(function(data) {
+
         $scope.questionSets = data.result;
         calculateRemainQuestionSets();
     });
 
     FormTypeService.query(function(data) {
+
         $scope.fieldTypes = data.result;
 
         calculateRemainFormFields();
