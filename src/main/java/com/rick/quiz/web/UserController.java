@@ -199,15 +199,31 @@ public class UserController {
 	public Result register(HttpSession session,
 			@RequestBody Map<String, String> userInfo) {
 		Result r = new Result(Status.SUCCESS);
-		if (isCapchaValid(session, userInfo)) {
-			User user = new User();
-			user.setUserInfo(userInfo);
-			userRepo.save(user);
-		} else {
+		if (!isCapchaValid(session, userInfo)) {
 			r.setStatus(Status.FAIL);
-			r.setMessage("验证码错误");
+			r.setMessage("验证码出错");
+			return r;
 		}
+
+		if (!isUniqueUser(userInfo)) {
+			r.setStatus(Status.FAIL);
+			r.setMessage("您已参与过本次测试，请勿重复");
+			return r;
+		}
+
+		User user = new User();
+		user.setUserInfo(userInfo);
+		user.setPhonenum(userInfo.get("phonenum"));
+		userRepo.save(user);
 		return r;
+	}
+
+	private boolean isUniqueUser(Map<String, String> userInfo) {
+		String phonenum = userInfo.get("phonenum");
+		if (phonenum != null && userRepo.findByPhonenum(phonenum) == null) {
+			return true;
+		}
+		return false;
 	}
 
 	@RequestMapping(value = "/capcha.png", method = RequestMethod.GET)

@@ -14,9 +14,11 @@ import com.google.common.collect.Maps;
 public class User {
 	@Id
 	String id;
-	
+
+	String phonenum;
+
 	Map<String, String> userInfo = Maps.newHashMap();
-	
+
 	@DBRef
 	List<UserQuiz> userQuizs = Lists.newArrayList();
 
@@ -26,6 +28,14 @@ public class User {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getPhonenum() {
+		return phonenum;
+	}
+
+	public void setPhonenum(String phonenum) {
+		this.phonenum = phonenum;
 	}
 
 	public Map<String, String> getUserInfo() {

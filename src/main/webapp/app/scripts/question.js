@@ -1,6 +1,7 @@
 define(['question-item', 'result'], function(require, exports) {
+    var timerId;
     exports.render = function(tpl, quiz) {
-        var questionList, elapsed, currentIdx, answers, timerId;
+        var questionList, elapsed, currentIdx, answers;
         elapsed = 0;
         answers = []; //anwser = {question:question, answer: answer}
 
@@ -211,7 +212,9 @@ define(['question-item', 'result'], function(require, exports) {
                 clearTimeout(timerId);
             }
             (function executor() {
+                clearTimeout();
                 timerId = setTimeout(function() {
+                    clearTimeout(timerId);
                     elapsed += 1000;
                     // console.log('elapsed: ', elapsed);
                     var remains = durationInMillSec - elapsed;
@@ -223,7 +226,9 @@ define(['question-item', 'result'], function(require, exports) {
                         $('#question-timer').text(mins + ':' + secs);
                         executor();
                     } else {
-
+                        clearTimeout(timerId);
+                        alert('已超时。');
+                        window.location.hash = 'stage=beigin';
                     }
                 }, 1000);
             })();

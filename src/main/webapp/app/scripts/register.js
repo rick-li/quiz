@@ -67,10 +67,21 @@ define(function(require, exports) {
                 result = false;
                 alert(errorMsg);
             }
+
+            result = checkMobile();
+
             return result;
         }
 
-
+        function checkMobile() {
+            var num = $('input[name=phonenum]').val();
+            if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(num))) {
+                alert("不是正确的手机号");
+                $('input[name=phonenum]').focus();
+                return false;
+            }
+            return true;
+        }
 
         function submitForm(formJson) {
             return new Promise(function(resolve, reject) {

@@ -26,7 +26,7 @@ define(function(require, exports) {
         if (!elapseInMins) {
             result = elapseInSec + '秒';
         } else {
-            result = elapsedInMins + '分';
+            result = elapseInMins + '分';
         }
         return result;
     }
