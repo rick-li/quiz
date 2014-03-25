@@ -137,6 +137,10 @@ define(['question-item', 'result'], function(require, exports) {
                     console.log('success: ', result);
                     console.log('result is ', require('result'));
                     require('result').setQuizResult(result.result);
+                    if (hashchangeHandler) {
+                        $(window).off('hashchange', hashchangeHandler);
+                    }
+                    clearTimers();
                     window.location.hash = $.param({
                         stage: 'result'
                     });
@@ -231,6 +235,9 @@ define(['question-item', 'result'], function(require, exports) {
                     } else {
                         clearTimers();
                         alert('已超时。');
+                        if (hashchangeHandler) {
+                            $(window).off('hashchange', hashchangeHandler);
+                        }
                         window.location.hash = 'stage=begin';
                     }
                 }, 1000);
