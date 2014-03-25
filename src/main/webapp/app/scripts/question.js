@@ -1,5 +1,6 @@
 define(['question-item', 'result'], function(require, exports) {
-    var timerId;
+    var timerIds = [];
+    var hashchangeHandler;
     exports.render = function(tpl, quiz) {
         var questionList, elapsed, currentIdx, answers;
         elapsed = 0;
@@ -21,11 +22,15 @@ define(['question-item', 'result'], function(require, exports) {
         // ========== functions
 
         function whenQuestionChange(onQuestionChange) {
-            $(window).on('hashchange', function(e) {
+            if (hashchangeHandler) {
+                $(window).off('hashchange', hashchangeHandler);
+            }
+            hashchangeHandler = function(e) {
                 var idx = $.deparam.fragment().idx || 0;
                 idx = parseInt(idx);
                 onQuestionChange(idx);
-            });
+            }
+            $(window).on('hashchange', hashchangeHandler);
         }
 
         function updateQuestionCtrl(updateIdx) {
@@ -208,13 +213,10 @@ define(['question-item', 'result'], function(require, exports) {
         function startTimer(durationInMin) {
 
             var durationInMillSec = durationInMin * 60 * 1000;
-            if (timerId) {
-                clearTimeout(timerId);
-            }
+            clearTimers();
             (function executor() {
-                clearTimeout();
-                timerId = setTimeout(function() {
-                    clearTimeout(timerId);
+                clearTimers();
+                var timerId = setTimeout(function() {
                     elapsed += 1000;
                     // console.log('elapsed: ', elapsed);
                     var remains = durationInMillSec - elapsed;
@@ -222,16 +224,24 @@ define(['question-item', 'result'], function(require, exports) {
                     var secs = parseInt((remains - (mins * 1000 * 60)) / 1000);
                     mins = mins < 10 ? '0' + mins : mins;
                     secs = secs < 10 ? '0' + secs : secs;
+                    console.log('durationInMillSec: ', durationInMillSec, ' elapsed: ', elapsed);
                     if (durationInMillSec > elapsed) {
                         $('#question-timer').text(mins + ':' + secs);
                         executor();
                     } else {
-                        clearTimeout(timerId);
+                        clearTimers();
                         alert('已超时。');
-                        window.location.hash = 'stage=beigin';
+                        window.location.hash = 'stage=begin';
                     }
                 }, 1000);
+                timerIds.push(timerId);
             })();
+        }
+
+        function clearTimers() {
+            $(timerIds).each(function(i, tid) {
+                clearTimeout(tid);
+            });
         }
 
         function handleError(error) {

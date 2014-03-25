@@ -9,7 +9,7 @@ define(['begin', 'register', 'question', 'result', 'bbq'], function(require, exp
     currentQuizCode = qs.quiz;
     currentStage = qf.stage || 'begin';
 
-    $(window).on('hashchange', function(e) {
+    $(window).off('hashchange').on('hashchange', function(e) {
 
         whenStageChange().then(getQuiz).then(handleStage)['catch'](function(error) {
             console.log('error, ', error);
