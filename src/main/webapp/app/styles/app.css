@@ -39,6 +39,9 @@ table {
 }
 .footer {
 }
+.begin {
+    word-wrap: break-word;
+}
 .pageSwitcher {
     cursor: pointer;
     margin-top: 50px;
@@ -90,7 +93,6 @@ table {
     font-size: 20px;
     padding: 15px 0;
     text-align: left;
-    margin-left: 60px;
 }
 .question-options {
     margin: 20px 0px 30px 30%;
@@ -126,13 +128,6 @@ table {
 }
 .result .result-item {
     margin: 10px 0;
-}
-.page {
-    width: 1000px;
-    margin: 0 auto;
-    height: auto;
-    overflow: hidden;
-    min-width: 290px;
 }
 #header {
     height: 161px;
@@ -173,4 +168,28 @@ table {
     width: 204px;
     height: 98px;
     margin: 0 auto;
+}
+@media only screen and (max-device-width : 1000px) {
+    .page, #continer, .question-wrapper {
+        width: 100%;
+        margin: 0;
+    }
+    .question-navigation {
+        padding: 0 5px;
+    }
+    .question-navigation a {
+        padding: 0 5px;
+    }
+    .question-name {
+        margin-left: 20px;
+    }
+    .question-item {
+        word-wrap:break-word;
+        word-break:break-all;
+    }
+    .question-options {
+        margin-left: 10%;
+        word-wrap:break-word;
+        word-break:break-all;
+    }
 }

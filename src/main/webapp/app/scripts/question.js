@@ -53,7 +53,7 @@ define(['question-item', 'result'], function(require, exports) {
             currentIdx = idx;
             var question = questionList[idx];
             console.log('question', question);
-            $.get('templates/question-item.html').done(function(strTpl) {
+            $.get('templates/question-item.html?t=' + new Date().getTime()).done(function(strTpl) {
                 var questionItemHtml = _.template(strTpl)({
                     idx: idx,
                     question: question,

@@ -30,7 +30,7 @@ define(['begin', 'register', 'question', 'result', 'bbq'], function(require, exp
         },
         'question': function(quiz) {
             var questionView = require('question');
-            renderUIWithTpl(questionView, quiz, 'templates/question.html');
+            renderUIWithTpl(questionView, quiz, 'templates/question.html?a=1');
         },
         'result': function(quiz) {
             var resultView = require('result');
