@@ -1,10 +1,15 @@
-define(['question-item', 'result'], function(require, exports) {
+define(function(require, exports) {
+
+    var result = require('result');
+    var questionItemTpl = require('text!../templates/question-item.html');
     var timerIds = [];
     var hashchangeHandler;
     exports.render = function(tpl, quiz) {
         var questionList, elapsed, currentIdx, answers;
         elapsed = 0;
         answers = []; //anwser = {question:question, answer: answer}
+
+        $('.header-title').text(quiz.name);
 
         whenQuestionChange(function(idx) {
             currentIdx = idx;
@@ -13,11 +18,11 @@ define(['question-item', 'result'], function(require, exports) {
 
         getQuestionList(quiz).then(function(questionList) {
             renderQuestion(questionList);
-            return Promise.resolve();
+            return $.Deferred().resolve();
         }).then(function() {
             $(window).trigger('hashchange');
             startTimer(quiz.durationInMin);
-        })['catch'](handleError);
+        }).fail(handleError);
 
         // ========== functions
 
@@ -53,18 +58,17 @@ define(['question-item', 'result'], function(require, exports) {
             currentIdx = idx;
             var question = questionList[idx];
             console.log('question', question);
-            $.get('templates/question-item.html?t=' + new Date().getTime()).done(function(strTpl) {
-                var questionItemHtml = _.template(strTpl)({
-                    idx: idx,
-                    question: question,
-                    getImageStyle: function(question) {
-                        return question.imageFileName ? 'question-image' : 'hidden';
-                    }
-                });
-                // console.log(questionItemHtml);
-                $('.question-item').html(questionItemHtml);
-                updateQuestionCtrl(idx);
+            var questionItemHtml = _.template(questionItemTpl)({
+                idx: idx,
+                question: question,
+                getImageStyle: function(question) {
+                    return question.imageFileName ? 'question-image' : 'hidden';
+                }
             });
+            // console.log(questionItemHtml);
+            $('.question-item').html(questionItemHtml);
+            updateQuestionCtrl(idx);
+
 
         }
 
@@ -168,22 +172,22 @@ define(['question-item', 'result'], function(require, exports) {
         }
 
         function getQuestionList(quiz) {
-            return new Promise(function(resolve, reject) {
-                if (questionList) {
-                    resolve(questionList);
-                } else {
-                    $.get('/quiz/mvc/user/quizCode/' + quiz.code + '/questions', function(result) {
-                        if (result.status === 'SUCCESS') {
-                            questionList = result.result;
-                            resolve(result.result);
-                        } else {
-                            reject(Error(result.message));
-                        }
-                    }).fail(function(error) {
-                        reject(error);
-                    });
-                }
-            });
+            var defer = $.Deferred();
+            if (questionList) {
+                defer.resolve(questionList);
+            } else {
+                $.get('/quiz/mvc/user/quizCode/' + quiz.code + '/questions', function(result) {
+                    if (result.status === 'SUCCESS') {
+                        questionList = result.result;
+                        defer.resolve(result.result);
+                    } else {
+                        defer.reject(Error(result.message));
+                    }
+                }).fail(function(error) {
+                    defer.reject(error);
+                });
+            }
+            return defer;
         }
 
         //return true for right, false for wrong.
@@ -228,7 +232,7 @@ define(['question-item', 'result'], function(require, exports) {
                     var secs = parseInt((remains - (mins * 1000 * 60)) / 1000);
                     mins = mins < 10 ? '0' + mins : mins;
                     secs = secs < 10 ? '0' + secs : secs;
-                    console.log('durationInMillSec: ', durationInMillSec, ' elapsed: ', elapsed);
+                    // console.log('durationInMillSec: ', durationInMillSec, ' elapsed: ', elapsed);
                     if (durationInMillSec > elapsed) {
                         $('#question-timer').text(mins + ':' + secs);
                         executor();

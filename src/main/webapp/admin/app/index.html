@@ -18,7 +18,10 @@
     <link href="styles/sb-admin.css" rel="stylesheet">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 
+    <link rel="stylesheet" href="../../lib/datatable/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="../../lib/datatable/css/datatables.css">
     <link rel="stylesheet" href="assets/app.css">
+
 </head>
 
 <body ng-controller="BodyCtrl">
@@ -52,6 +55,9 @@
                     </li>
 
                     <li ng-class="{active:isMenuSelected('quizs')}"><a href="index.html#quizs"><i class="fa fa-pencil-square-o"></i>试卷</a>
+                    </li>
+
+                    <li ng-class="{active:isMenuSelected('quizresults')}"><a href="index.html#quizresults"><i class="fa fa-table"></i>结果统计</a>
                     </li>
 
                     <li ng-class="{active:isMenuSelected('fieldtypes')}"><a href="index.html#fieldtypes"><i class="fa fa-align-justify"></i>表单字段</a>
@@ -131,14 +137,14 @@
     <script type="text/javascript" src="../../lib/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="../../lib/ckeditor/adapters/jquery.js"></script>
 
-    <script src="../../lib/tablesorter/jquery.tablesorter.js"></script>
-    <script src="../../lib/tablesorter/tables.js"></script>
+    <script type="text/javascript" src="../../lib/datatable/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="../../lib/datatable/js/datatables.js"></script>
 
     <script src="./assets/app.js"></script>
     <script>
     $(document).ready(function() {
 
-        angular.bootstrap(document, ['myApp']);
+        angular.bootstrap(document, ['quizAdmin']);
 
 
 

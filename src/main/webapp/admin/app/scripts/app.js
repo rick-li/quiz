@@ -1,8 +1,6 @@
-var app = angular.module('myApp', ['ngRoute', 'ngResource', 'angularFileUpload']);
+var app = angular.module('quizAdmin', ['ngRoute', 'ngResource', 'angularFileUpload']);
 
-app.constant('TPL_PATH', 'templates')
-
-
+app.constant('TPL_PATH', 'templates');
 app.constant('UserEvent', 'UserEvent');
 app.constant('MaskEvent', 'MaskEvent');
 app.constant('ArticleEvent', 'ArticleEvent');
@@ -12,8 +10,6 @@ app.constant('Status', {
     'new': 'new',
     'wait': 'wait'
 });
-
-
 
 app.config(function($routeProvider) {
     $routeProvider
@@ -34,6 +30,10 @@ app.config(function($routeProvider) {
             templateUrl: 'templates/quiz-editor.html',
             controller: 'QuizEditor'
         })
+        .when('/quizresults', {
+            templateUrl: 'templates/quiz-results.html',
+            controller: 'QuizResultsCtrl'
+        })
         .when('/fieldtypes', {
             templateUrl: 'templates/form-field-types.html',
             controller: 'FormTypeCtrl'
@@ -42,52 +42,14 @@ app.config(function($routeProvider) {
             redirectTo: '/quizs'
         });
 });
-
-app.directive('ckeditor', function($log) {
-    return {
-        restrict: 'E',
-        scope: {
-            content: '=',
-            ckheight: '@'
-        },
-        link: function(scope, elm, attr) {
-
-            $log.log('attr is ', attr);
-
-            var ck = CKEDITOR.replace(elm[0], {
-                height: attr['ckheight'],
-                language: 'zh-cn'
-            });
-
-            ck.on('instanceReady', function() {
-                ck.setData(scope.$apply('content'));
-                scope.$watch('content', function(newContent) {
-                    if (newContent !== ck.getData()) {
-                        $log.log('content changed, "', newContent, '"');
-                        ck.setData(newContent);
-                    }
-                });
-
-                ck.on('change', updateModel);
-                ck.on('key', updateModel);
-
-            });
-
-
-            function updateModel() {
-                scope.$apply(function() {
-                    scope.content = ck.getData();
-                });
-            }
-        }
-    };
+app.controller('TestCtrl', function($scope, $log) {
+    $log.log('Test Ctrl');
 });
-
 app.controller('BodyCtrl', function($scope, $rootScope, MaskEvent, $log) {
-    $log.log('BodyCtrl')
+    $log.log('BodyCtrl');
     $scope.loadingMask = false;
     $rootScope.$on(MaskEvent, function(e, type) {
-        $log.log('mask event', type)
+        $log.log('mask event', type);
         if (type === 'start') {
             $scope.loadingMask = true;
         } else {
@@ -102,19 +64,19 @@ app.controller('MenuCtrl', function($scope, $location) {
         var currentPath = $location.path();
         return currentPath.indexOf(menu) != -1;
     };
-})
+});
 
 app.service('MaskService', ['$rootScope', 'MaskEvent', '$log',
     function($rootScope, MaskEvent, $log) {
         return {
             'start': function() {
-                $log.log('mask service start')
+                $log.log('mask service start');
                 $rootScope.$emit(MaskEvent, 'start');
             },
             'stop': function() {
                 $rootScope.$emit(MaskEvent, 'stop');
             }
-        }
+        };
     }
 ]);
 
@@ -132,12 +94,12 @@ app.directive('ngConfirmClick', [
                     }
                 });
             }
-        }
+        };
     }
 ]);
 
 app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEvent) {
-    $log.log('nav ctrl')
+    $log.log('nav ctrl');
     // $scope.currentUser = Parse.User.current();
     // $log.log($scope.currentUser);
     // $rootScope.$on(UserEvent, function(e, user) {

@@ -7,7 +7,10 @@
     <title>Quiz</title>
 
     <link rel="stylesheet" href="styles/app.css">
-    <!-- <link rel="stylesheet" href="lib/jquery-ui/themes/base/jquery-ui.css"> -->
+
+    <link rel="stylesheet" href="lib/jquery-ui.css">
+    <link rel="stylesheet" href="lib/jquery.ui.datepicker.css">
+
 
 </head>
 
@@ -29,8 +32,8 @@
     <script src="lib/json3.min.js"></script>
     <![endif]-->
 
-    <script src="lib/promise-0.1.1.min.js"></script>
-    <script src="lib/sea-debug.js"></script>
+
+
     <script>
     //polyfill console
     if (typeof console === 'undefined') {
@@ -47,28 +50,9 @@
                 Array.prototype.slice.call(arguments)));
         };
     };
-    seajs.config({
-        base: ".",
-        alias: {
-            "jquery": "lib/jquery.min.js",
-            "jquery-migrate": "lib/jquery-migrate-1.2.1.js",
-            "underscore": "lib/underscore-min.js",
-            "bbq": "lib/jquery.ba-bbq.min.js",
-            //"jquery-ui-widget": "lib/jquery-ui/ui/jquery.ui.widget.js",
-            "app": "scripts/app.js?a=1",
-            "begin": "scripts/begin.js",
-            "register": "scripts/register.js",
-            "question": "scripts/question.js",
-            "question-item": "scripts/question-item.js",
-            "result": "scripts/result.js"
-            // "hash": "scripts/hash-event.js"
-        },
-        preload: ['jquery', 'underscore']
-    });
-    seajs.use("app");
     </script>
 
-
+    <script data-main="scripts/main" src="lib/require.js"></script>
 
 
     <!--<script src="lib/jquery-ui/ui/jquery.ui.core.js"></script>

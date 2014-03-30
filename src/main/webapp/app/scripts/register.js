@@ -2,8 +2,9 @@ define(function(require, exports) {
     exports.render = function(tpl, quiz) {
         var userTpl = $('#register');
         var content = tpl(quiz);
-        $('#content').html(content);
 
+        $('#content').html(content);
+        $('.header-title').text(quiz.name);
         $('.register-wrapper input').on('keydown', function(e) {
             var key = e.which;
             if (key == 13) {
@@ -11,7 +12,10 @@ define(function(require, exports) {
                 e.preventDefault();
             }
         });
-
+        $('[name=birthday]').attr('readonly', true);
+        $('[name=birthday]').datepicker({
+            defaultDate: '-10y'
+        });
         $('.capcha-image, .capcha-change-btn').on('click', function() {
             console.log('click capcha image.');
             var capSrc = $('.capcha-image').attr('src');
@@ -30,7 +34,7 @@ define(function(require, exports) {
                 //do submit;
                 submitForm(formJson).then(function(result) {
                     window.location.hash = 'stage=question';
-                })['catch'](function(error) {
+                }).fail(function(error) {
                     alert('错误:' + error.message);
                 });
             }
@@ -84,24 +88,25 @@ define(function(require, exports) {
         }
 
         function submitForm(formJson) {
-            return new Promise(function(resolve, reject) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/quiz/mvc/user/register',
-                    data: JSON.stringify(formJson),
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    success: function(result) {
-                        if (result.status === 'SUCCESS') {
-                            resolve(result);
-                        } else {
-                            reject(Error(result.message));
-                        }
+            var defer = $.Deferred();
+
+            $.ajax({
+                type: 'POST',
+                url: '/quiz/mvc/user/register',
+                data: JSON.stringify(formJson),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(result) {
+                    if (result.status === 'SUCCESS') {
+                        defer.resolve(result);
+                    } else {
+                        defer.reject(Error(result.message));
                     }
-                }).fail(function(error) {
-                    reject(error);
-                });
+                }
+            }).fail(function(error) {
+                defer.reject(error);
             });
+            return defer;
         }
     };
 

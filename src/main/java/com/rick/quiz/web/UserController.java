@@ -44,6 +44,8 @@ import com.rick.quiz.web.Result.Status;
 public class UserController {
 	private static final Logger log = LoggerFactory
 			.getLogger(UserController.class);
+
+	public static final String USER_INFO = "userInfo";
 	private static final HttpHeaders HTTP_HEADERS;
 	private static final String CAPCHA_KEY = "capcha";
 	private static final String QUIZ_QUESTIONS_CACHE_KEY = "quizQuestionCacheKey";
@@ -143,6 +145,8 @@ public class UserController {
 		log.debug("Score is: {}, eclapsed is  ", userQuiz.getSecondsUsed());
 
 		userQuiz.setScore(score);
+		User user = (User) session.getAttribute(USER_INFO);
+		userQuiz.setUser(user);
 		userQuizRepo.save(userQuiz);
 
 		Map<String, String> resultMap = Maps.newHashMap();
@@ -215,6 +219,7 @@ public class UserController {
 		user.setUserInfo(userInfo);
 		user.setPhonenum(userInfo.get("phonenum"));
 		userRepo.save(user);
+		session.setAttribute(USER_INFO, user);
 		return r;
 	}
 

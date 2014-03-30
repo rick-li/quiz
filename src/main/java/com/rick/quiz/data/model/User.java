@@ -1,13 +1,10 @@
 package com.rick.quiz.data.model;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @Document(collection = "user")
@@ -18,9 +15,6 @@ public class User {
 	String phonenum;
 
 	Map<String, String> userInfo = Maps.newHashMap();
-
-	@DBRef
-	List<UserQuiz> userQuizs = Lists.newArrayList();
 
 	public String getId() {
 		return id;
@@ -44,14 +38,6 @@ public class User {
 
 	public void setUserInfo(Map<String, String> userInfo) {
 		this.userInfo = userInfo;
-	}
-
-	public List<UserQuiz> getUserQuizs() {
-		return userQuizs;
-	}
-
-	public void setUserQuizs(List<UserQuiz> userQuizs) {
-		this.userQuizs = userQuizs;
 	}
 
 }

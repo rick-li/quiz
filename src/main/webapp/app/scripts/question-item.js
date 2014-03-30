@@ -1,7 +1,3 @@
-define([], function(require, exports) {
-    exports.render = function(question, idx) {
-
-
-
-    }
+define(function(require, exports) {
+    exports.render = function(question, idx) {}
 });

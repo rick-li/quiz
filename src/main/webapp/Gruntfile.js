@@ -108,20 +108,23 @@ module.exports = function(grunt) {
                 },
                 dest: './admin/app/assets/app.js',
                 src: [
-                    'lib/angular/angular.min.js',
-                    'lib/angular/angular-route.min.js',
+                    'lib/angular/angular.js',
+                    'lib/angular/angular-route.js',
                     'lib/angular/angular-resource.min.js',
                     'lib/angular-file-upload.js',
                     'lib/underscore-min.js',
 
                     'admin/app/scripts/app.js',
+                    'admin/app/scripts/directives.js',
                     'admin/app/scripts/questionsets.js',
                     'admin/app/scripts/questions.js',
                     'admin/app/scripts/detail.js',
                     'admin/app/scripts/login.js',
                     'admin/app/scripts/quiz.js',
                     'admin/app/scripts/quiz-editor.js',
-                    'admin/app/scripts/form-field-types.js'
+                    'admin/app/scripts/results.js',
+                    'admin/app/scripts/form-field-types.js',
+
                     //place your JavaScript files here
                 ]
             }

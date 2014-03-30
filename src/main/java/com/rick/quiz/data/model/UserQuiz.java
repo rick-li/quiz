@@ -9,18 +9,20 @@ import com.google.common.collect.Lists;
 
 @Document(collection = "user-quiz")
 public class UserQuiz {
-	
+
 	@Id
 	String id;
-	
+
 	String quizCode;
-	
+
 	String quizName;
-	
+
 	float score;
-	
+
 	int secondsUsed;
-	
+
+	User user;
+
 	List<UserQuestion> userQuestions = Lists.newArrayList();
 
 	public String getId() {
@@ -46,7 +48,7 @@ public class UserQuiz {
 	public void setQuizName(String quizName) {
 		this.quizName = quizName;
 	}
-	
+
 	public float getScore() {
 		return score;
 	}
@@ -69,6 +71,14 @@ public class UserQuiz {
 
 	public void setUserQuestions(List<UserQuestion> userQuestions) {
 		this.userQuestions = userQuestions;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
