@@ -101,7 +101,9 @@ public class UserController {
 				List<QuestionSetAssociation> qsAssoc = quiz.getQuestionSets();
 				int totalNum = quiz.getQuestionNum();
 				for (QuestionSetAssociation qa : qsAssoc) {
-					int qsNum = (int) (totalNum * qa.getPercentage() / 100);
+					int qsNum = Math
+							.round((totalNum * qa.getPercentage() / 100));
+					log.info("========> qsNum is " + qsNum);
 					QuestionSet qs = qa.getQs();
 					List<Question> qsList = Lists.newArrayList(questionRepo
 							.findByQuestionSetIdOrderByLastUpdateDesc(qs
@@ -152,9 +154,7 @@ public class UserController {
 		Map<String, String> resultMap = Maps.newHashMap();
 		resultMap.put("score", score * 100 + "");
 		resultMap.put("elapsed", userQuiz.getSecondsUsed() + "");
-		Map<String, Map<String, String>> quizCodeToResult = this
-				.getQuizCodeToResultCache(session);
-		quizCodeToResult.put(userQuiz.getQuizCode(), resultMap);
+		session.invalidate();
 		Result r = new Result(Status.SUCCESS);
 		r.setResult(resultMap);
 		return r;

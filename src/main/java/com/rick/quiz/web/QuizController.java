@@ -3,6 +3,8 @@ package com.rick.quiz.web;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,9 @@ import com.rick.quiz.web.Result.Status;
 @Controller
 @RequestMapping("/quiz")
 public class QuizController {
+
+	Logger log = LoggerFactory.getLogger(QuizController.class);
+
 	@Autowired
 	QuizRepo quizRepo;
 
@@ -46,7 +51,8 @@ public class QuizController {
 		List<Question> totalQuestionList = Lists.newArrayList();
 		for (QuestionSetAssociation set : sets) {
 			float percent = set.getPercentage();
-			int qsNum = (int) (totalNum * percent / 100);
+			int qsNum = Math.round((totalNum * percent / 100));
+			log.info("======> QsNum: " + qsNum);
 			List<Question> qsQuestions = questionRepo
 					.findByQuestionSetIdOrderByLastUpdateDesc(set.getQs()
 							.getId());
