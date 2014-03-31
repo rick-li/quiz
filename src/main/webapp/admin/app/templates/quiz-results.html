@@ -1,3 +1,9 @@
 <div class="row">
-    <datatable content="mydata"></datatable>
+
+    <div style="float:right;margin: 20px 0 20px;">
+        <select ng-model="selectedQuiz" ng-options="qp.code as qp.name for qp in quizpairs"></select>
+    </div>
+    <div class="">
+        <datatable content="mydata"></datatable>
+    </div>
 </div>

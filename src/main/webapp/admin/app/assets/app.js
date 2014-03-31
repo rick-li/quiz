@@ -21362,7 +21362,7 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
             $log.log('=======>template');
             var strVar = "";
             strVar += "<table id='testgrid' class='datatable table table-striped table-bordered'>";
-            strVar += "    <\/table>";
+            strVar += "<\/table>";
             return strVar;
         },
 
@@ -21934,12 +21934,29 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         $location.path('/quizs');
     }
 });;app.controller('QuizResultsCtrl', function($scope, $log, $location) {
-    $log.log('in results ctrl');
+    // $log.log('in results ctrl');
 
-    $.get('/quiz/mvc/quizresults/test1').done(function(data) {
+    $.get('/quiz/mvc/quizresults/quizpairs').done(function(data) {
         $scope.$apply(function() {
-            // $log.log(data);
-            $scope.mydata = data.result;
+
+            $scope.quizpairs = data.result;
+            $log.log('quiz pairs is ', $scope.quizpairs);
+            if ($scope.quizpairs[0]) {
+                $scope.selectedQuiz = $scope.quizpairs[0].code;
+            }
+        });
+    });
+
+    $scope.$watch('selectedQuiz', function(quizcode) {
+        if (!quizcode) {
+            return;
+        }
+        $.get('/quiz/mvc/quizresults/' + quizcode).done(function(data) {
+            $scope.$apply(function() {
+
+                $scope.mydata = data.result;
+            });
+
         });
 
     });

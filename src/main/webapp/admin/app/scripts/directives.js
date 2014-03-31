@@ -30,7 +30,7 @@ app.directive('datatable', function($log) {
             $log.log('=======>template');
             var strVar = "";
             strVar += "<table id='testgrid' class='datatable table table-striped table-bordered'>";
-            strVar += "    <\/table>";
+            strVar += "<\/table>";
             return strVar;
         },
 
