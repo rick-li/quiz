@@ -21530,16 +21530,7 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             $scope.selectedItem = newVal[0];
         }
     }, true);
-    // $scope.columnData = [{
-    //     sTitle: "问题"
-    // }, {
-    //     bSortable: false,
-    //     sClass: "center",
-    //     mRender: function(data, type, row) {
-    //         // $log.log('row data is', data);
-    //         return '<button type="button" class="btn btn-default btn-delete" qid="' + data + '"><i class="fa fa-times"></i></button>';
-    //     }
-    // }];
+
     $scope.pagingOptions = {
         // pageSizes: list of available page sizes.
         pageSizes: [10, 20, 50],
@@ -21578,7 +21569,6 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
         }
     }, true);
 
-
     $scope.query = function() {
         Question.query({
             qsId: $routeParams['qsId']
@@ -21587,12 +21577,9 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             $scope.questions = data.result;
             $scope.selectedItem = $scope.questions[0];
             $scope.totalServerItems = $scope.questions.length;
-            // $scope.aaQuestionData = data.result.map(function(q) {
-            //     return [q.name, q.id];
-            // });
             var start = ($scope.pagingOptions.currentPage - 1) * $scope.pagingOptions.pageSize;
             $scope.pagedQuestions = $scope.questions.slice(start, $scope.pagingOptions.pageSize);
-            // $log.log($scope.aaQuestionData);
+
         });
     };
     $scope.query();
