@@ -16,27 +16,74 @@ app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $rout
             method: 'GET'
         }
     });
+    $scope.questions = [];
+    $scope.pagedQuestions = [];
+    $scope.questionSize = 0;
+    $scope.selectedItems = [];
+    $scope.selectedItem = {
+        options: [],
+        rightAnswer: []
+    };
+    $scope.selectedOption = null;
+    $scope.$watch('selectedItems', function(newVal) {
+
+        if (newVal && newVal[0]) {
+            $scope.selectedItem = newVal[0];
+        }
+    }, true);
+
+    $scope.pagingOptions = {
+        // pageSizes: list of available page sizes.
+        pageSizes: [10, 20, 50],
+        //pageSize: currently selected page size. 
+        pageSize: 10,
+        //currentPage: the uhm... current page.
+        currentPage: 1
+    };
+    $scope.dataOptions = {
+        data: 'pagedQuestions',
+        columnDefs: [{
+            field: 'name',
+            displayName: '题目'
+        }, {
+            displayName: '',
+            width: 50,
+            cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"> <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i></button></div>'
+        }],
+        rowHeight: 45,
+        selectedItems: $scope.selectedItems,
+        totalServerItems: 'totalServerItems',
+        pagingOptions: $scope.pagingOptions,
+        enablePaging: true,
+        showFooter: true,
+        multiSelect: false,
+    };
+
+    $scope.$watch('pagingOptions', function(newVal, oldVal) {
+        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+            // $scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage
+            var start = ($scope.pagingOptions.currentPage - 1) * $scope.pagingOptions.pageSize;
+            $log.log('====> start is ', start);
+            $scope.pagedQuestions = $scope.questions.slice(start, start + $scope.pagingOptions.pageSize);
+            $log.log('====> pageQuestions is ', $scope.pagedQuestions);
+            $scope.totalServerItems = $scope.questions.length;
+        }
+    }, true);
 
     $scope.query = function() {
         Question.query({
             qsId: $routeParams['qsId']
         }, function(data) {
-            $log.log('result is ', data);
+            $log.log('result is ', data.result);
             $scope.questions = data.result;
-            if ($scope.questions.length > 0) {
-                $scope.selectedItem = $scope.questions[0];
-            } else {
-                $scope.selectedItem = {
-                    options: [],
-                    rightAnswer: []
-                };
-                $scope.selectedOption = null;
-            }
+            $scope.selectedItem = $scope.questions[0];
+            $scope.totalServerItems = $scope.questions.length;
+            var start = ($scope.pagingOptions.currentPage - 1) * $scope.pagingOptions.pageSize;
+            $scope.pagedQuestions = $scope.questions.slice(start, $scope.pagingOptions.pageSize);
 
         });
     };
     $scope.query();
-
 
     $scope.select = function(item) {
         $scope.selectedItem = item;
@@ -129,10 +176,11 @@ app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $rout
     };
 
     $scope.delete = function(item) {
-        Question.delete(item, function() {
+        Question.delete($scope.selectedItem, function() {
             $scope.query();
         });
     };
+
     $scope.submit = function(item) {
         $log.log('submit question.', item);
         if (!item.rightAnswer || item.rightAnswer.length <= 0) {
@@ -145,5 +193,4 @@ app.controller('QuestionCtrl', function($scope, $log, $timeout, $resource, $rout
             $scope.query();
         });
     };
-
 });

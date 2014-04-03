@@ -12,13 +12,24 @@ app.controller('QuizResultsCtrl', function($scope, $log, $location) {
         });
     });
 
+    $scope.columnData = [{
+        "sTitle": "分数"
+    }, {
+        "sTitle": "用时"
+    }, {
+        "sTitle": "名字"
+    }, {
+        "sTitle": "手机号"
+    }, {
+        "sTitle": "生日"
+    }];
+
     $scope.$watch('selectedQuiz', function(quizcode) {
         if (!quizcode) {
             return;
         }
         $.get('/quiz/mvc/quizresults/' + quizcode).done(function(data) {
             $scope.$apply(function() {
-
                 $scope.mydata = data.result;
             });
 

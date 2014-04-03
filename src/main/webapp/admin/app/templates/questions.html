@@ -1,15 +1,9 @@
 <div class="row">
-
-
     <div class="col-md-12">
         <div class="col-md-6">
             <div>
-
                 <div class="panel panel-default">
-
-
                     <div class="panel-heading">
-
                         <div class="collapse navbar-collapse">
 
                             <label for="">题目</label>
@@ -20,7 +14,11 @@
 
                     <div class="panel-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped tablesorter">
+
+                            <div class="ngGridStyle" ng-grid="dataOptions"></div>
+                            <!--
+                            <datatable content="aaQuestionData" columns="columnData" ondelete="delete(qid)"></datatable>-->
+                            <!-- <table class="table table-bordered table-hover table-striped tablesorter">
                                 <thead>
                                     <tr>
 
@@ -45,7 +43,7 @@
                                     </tr>
 
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
 
                     </div>
@@ -80,7 +78,6 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-
 
                     <div class="panel-heading">
 

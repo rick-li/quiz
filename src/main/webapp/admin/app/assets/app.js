@@ -21024,190 +21024,201 @@ B=f.copy,u=f.isFunction;n.prototype={setUrlParams:function(m,h,k){var r=this,e=k
  * @version 1.2.9
  */
 (function() {
-	
-var angularFileUpload = angular.module('angularFileUpload', []);
 
-angularFileUpload.service('$upload', ['$http', '$rootScope', '$timeout', function($http, $rootScope, $timeout) {
-	function sendHttp(config) {
-		config.method = config.method || 'POST';
-		config.headers = config.headers || {};
-		config.transformRequest = config.transformRequest || function(data) {
-			if (window.ArrayBuffer && data instanceof ArrayBuffer) {
-				return data;
-			}
-			return $http.defaults.transformRequest[0](data);
-		};
-		
-		if (window.XMLHttpRequest.__isShim) {
-			config.headers['__setXHR_'] = function() {
-				return function(xhr) {
-					config.__XHR = xhr;
-					xhr.upload.addEventListener('progress', function(e) {
-						if (config.progress) {
-							$timeout(function() {
-								if(config.progress) config.progress(e);
-							});
-						}
-					}, false);
-					//fix for firefox not firing upload progress end, also IE8-9
-					xhr.upload.addEventListener('load', function(e) {
-						if (e.lengthComputable) {
-							$timeout(function() {
-								if(config.progress) config.progress(e);
-							});
-						}
-					}, false);
-				}	
-			};
-		}
-			
-		var promise = $http(config);
-		
-		promise.progress = function(fn) {
-			config.progress = fn;
-			return promise;
-		};		
-		promise.abort = function() {
-			if (config.__XHR) {
-				$timeout(function() {
-					config.__XHR.abort();
-				});
-			}
-			return promise;
-		};		
-		promise.then = (function(promise, origThen) {
-			return function(s, e, p) {
-				config.progress = p || config.progress;
-				var result = origThen.apply(promise, [s, e, p]);
-				result.abort = promise.abort;
-				result.progress = promise.progress;
-				return result;
-			};
-		})(promise, promise.then);
-		
-		return promise;
-	};
-	this.upload = function(config) {
-		config.headers = config.headers || {};
-		config.headers['Content-Type'] = undefined;
-		config.transformRequest = config.transformRequest || $http.defaults.transformRequest;
-		var formData = new FormData();
-		if (config.data) {
-			for (var key in config.data) {
-				var val = config.data[key];
-				if (!config.formDataAppender) {
-					if (typeof config.transformRequest == 'function') {
-						val = config.transformRequest(val);
-					} else {
-						for (var i = 0; i < config.transformRequest.length; i++) {
-							var fn = config.transformRequest[i];
-							if (typeof fn == 'function') {
-								val = fn(val);
-							}
-						}
-					}
-					formData.append(key, val);
-				} else {
-					config.formDataAppender(formData, key, val);
-				}
-			}
-		}
-		config.transformRequest =  angular.identity;
-		
-		var fileFormName = config.fileFormDataName || 'file';
-		
-		if (Object.prototype.toString.call(config.file) === '[object Array]') {
-			var isFileFormNameString = Object.prototype.toString.call(fileFormName) === '[object String]'; 
-			for (var i = 0; i < config.file.length; i++) {						         
-				formData.append(isFileFormNameString ? fileFormName + i : fileFormName[i], config.file[i], config.file[i].name);
-			}
-		} else {
-			formData.append(fileFormName, config.file, config.file.name);
-		}
-		
-		config.data = formData;
-		
-		return sendHttp(config);
-	};
-	this.http = function(config) {
-		return sendHttp(config);
-	}
-}]);
+    var angularFileUpload = angular.module('angularFileUpload', []);
 
-angularFileUpload.directive('ngFileSelect', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
-	return function(scope, elem, attr) {
-		var fn = $parse(attr['ngFileSelect']);
-		elem.bind('change', function(evt) {
-			var files = [], fileList, i;
-			fileList = evt.target.files;
-			if (fileList != null) {
-				for (i = 0; i < fileList.length; i++) {
-					files.push(fileList.item(i));
-				}
-			}
-			$timeout(function() {
-				fn(scope, {
-					$files : files,
-					$event : evt
-				});
-			});
-		});
-		elem.bind('click', function(){
-			this.value = null;
-		});
-	};
-} ]);
+    angularFileUpload.service('$upload', ['$http', '$rootScope', '$timeout',
+        function($http, $rootScope, $timeout) {
+            function sendHttp(config) {
+                config.method = config.method || 'POST';
+                config.headers = config.headers || {};
+                config.transformRequest = config.transformRequest || function(data) {
+                    if (window.ArrayBuffer && data instanceof ArrayBuffer) {
+                        return data;
+                    }
+                    return $http.defaults.transformRequest[0](data);
+                };
 
-angularFileUpload.directive('ngFileDropAvailable', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
-	return function(scope, elem, attr) {
-		if ('draggable' in document.createElement('span')) {
-			var fn = $parse(attr['ngFileDropAvailable']);
-			$timeout(function() {
-				fn(scope);
-			});
-		}
-	};
-} ]);
+                if (window.XMLHttpRequest.__isShim) {
+                    config.headers['__setXHR_'] = function() {
+                        return function(xhr) {
+                            config.__XHR = xhr;
+                            xhr.upload.addEventListener('progress', function(e) {
+                                if (config.progress) {
+                                    $timeout(function() {
+                                        if (config.progress) config.progress(e);
+                                    });
+                                }
+                            }, false);
+                            //fix for firefox not firing upload progress end, also IE8-9
+                            xhr.upload.addEventListener('load', function(e) {
+                                if (e.lengthComputable) {
+                                    $timeout(function() {
+                                        if (config.progress) config.progress(e);
+                                    });
+                                }
+                            }, false);
+                        }
+                    };
+                }
 
-angularFileUpload.directive('ngFileDrop', [ '$parse', '$http', '$timeout', function($parse, $http, $timeout) {
-	return function(scope, elem, attr) {
-		if ('draggable' in document.createElement('span')) {
-			var cancel = null;
-			var fn = $parse(attr['ngFileDrop']);
-			elem[0].addEventListener("dragover", function(evt) {
-				$timeout.cancel(cancel);
-				evt.stopPropagation();
-				evt.preventDefault();
-				elem.addClass(attr['ngFileDragOverClass'] || "dragover");
-			}, false);
-			elem[0].addEventListener("dragleave", function(evt) {
-				cancel = $timeout(function() {
-					elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
-				});
-			}, false);
-			elem[0].addEventListener("drop", function(evt) {
-				evt.stopPropagation();
-				evt.preventDefault();
-				elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
-				var files = [], fileList = evt.dataTransfer.files, i;
-				if (fileList != null) {
-					for (i = 0; i < fileList.length; i++) {
-						files.push(fileList.item(i));
-					}
-				}
-				$timeout(function() {
-					fn(scope, {
-						$files : files,
-						$event : evt
-					});
-				});
-			}, false);
-		}
-	};
-} ]);
+                var promise = $http(config);
 
-})();
-;//     Underscore.js 1.5.2
+                promise.progress = function(fn) {
+                    config.progress = fn;
+                    return promise;
+                };
+                promise.abort = function() {
+                    if (config.__XHR) {
+                        $timeout(function() {
+                            config.__XHR.abort();
+                        });
+                    }
+                    return promise;
+                };
+                promise.then = (function(promise, origThen) {
+                    return function(s, e, p) {
+                        config.progress = p || config.progress;
+                        var result = origThen.apply(promise, [s, e, p]);
+                        result.abort = promise.abort;
+                        result.progress = promise.progress;
+                        return result;
+                    };
+                })(promise, promise.then);
+
+                return promise;
+            };
+            this.upload = function(config) {
+                config.headers = config.headers || {};
+                config.headers['Content-Type'] = undefined;
+                config.transformRequest = config.transformRequest || $http.defaults.transformRequest;
+                var formData = new FormData();
+                if (config.data) {
+                    for (var key in config.data) {
+                        var val = config.data[key];
+                        if (!config.formDataAppender) {
+                            if (typeof config.transformRequest == 'function') {
+                                val = config.transformRequest(val);
+                            } else {
+                                for (var i = 0; i < config.transformRequest.length; i++) {
+                                    var fn = config.transformRequest[i];
+                                    if (typeof fn == 'function') {
+                                        val = fn(val);
+                                    }
+                                }
+                            }
+                            formData.append(key, val);
+                        } else {
+                            config.formDataAppender(formData, key, val);
+                        }
+                    }
+                }
+                config.transformRequest = angular.identity;
+
+                var fileFormName = config.fileFormDataName || 'file';
+
+                if (Object.prototype.toString.call(config.file) === '[object Array]') {
+                    var isFileFormNameString = Object.prototype.toString.call(fileFormName) === '[object String]';
+                    for (var i = 0; i < config.file.length; i++) {
+                        formData.append(isFileFormNameString ? fileFormName + i : fileFormName[i], config.file[i], config.file[i].name);
+                    }
+                } else {
+                    formData.append(fileFormName, config.file, config.file.name);
+                }
+
+                config.data = formData;
+
+                return sendHttp(config);
+            };
+            this.http = function(config) {
+                return sendHttp(config);
+            }
+        }
+    ]);
+
+    angularFileUpload.directive('ngFileSelect', ['$parse', '$http', '$timeout',
+        function($parse, $http, $timeout) {
+            return function(scope, elem, attr) {
+                var fn = $parse(attr['ngFileSelect']);
+
+                elem.bind('change', function(evt) {
+                    var files = [],
+                        fileList, i;
+                    fileList = evt.target.files;
+                    if (fileList != null) {
+                        for (i = 0; i < fileList.length; i++) {
+                            files.push(fileList.item(i));
+                        }
+                    }
+                    $timeout(function() {
+                        fn(scope, {
+                            $files: files,
+                            $event: evt
+                        });
+                    });
+                });
+                elem.bind('click', function() {
+                    this.value = null;
+                });
+            };
+        }
+    ]);
+
+    angularFileUpload.directive('ngFileDropAvailable', ['$parse', '$http', '$timeout',
+        function($parse, $http, $timeout) {
+            return function(scope, elem, attr) {
+                if ('draggable' in document.createElement('span')) {
+                    var fn = $parse(attr['ngFileDropAvailable']);
+                    $timeout(function() {
+                        fn(scope);
+                    });
+                }
+            };
+        }
+    ]);
+
+    angularFileUpload.directive('ngFileDrop', ['$parse', '$http', '$timeout',
+        function($parse, $http, $timeout) {
+            return function(scope, elem, attr) {
+                if ('draggable' in document.createElement('span')) {
+                    var cancel = null;
+                    var fn = $parse(attr['ngFileDrop']);
+                    elem[0].addEventListener("dragover", function(evt) {
+                        $timeout.cancel(cancel);
+                        evt.stopPropagation();
+                        evt.preventDefault();
+                        elem.addClass(attr['ngFileDragOverClass'] || "dragover");
+                    }, false);
+                    elem[0].addEventListener("dragleave", function(evt) {
+                        cancel = $timeout(function() {
+                            elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
+                        });
+                    }, false);
+                    elem[0].addEventListener("drop", function(evt) {
+                        evt.stopPropagation();
+                        evt.preventDefault();
+                        elem.removeClass(attr['ngFileDragOverClass'] || "dragover");
+                        var files = [],
+                            fileList = evt.dataTransfer.files,
+                            i;
+                        if (fileList != null) {
+                            for (i = 0; i < fileList.length; i++) {
+                                files.push(fileList.item(i));
+                            }
+                        }
+                        $timeout(function() {
+                            fn(scope, {
+                                $files: files,
+                                $event: evt
+                            });
+                        });
+                    }, false);
+                }
+            };
+        }
+    ]);
+
+})();;//     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
@@ -21217,7 +21228,7 @@ angularFileUpload.directive('ngFileDrop', [ '$parse', '$http', '$timeout', funct
 
 
 
-;var app = angular.module('quizAdmin', ['ngRoute', 'ngResource', 'angularFileUpload']);
+;var app = angular.module('quizAdmin', ['ngRoute', 'ngResource', 'angularFileUpload', 'ngGrid']);
 
 app.constant('TPL_PATH', 'templates');
 app.constant('UserEvent', 'UserEvent');
@@ -21330,59 +21341,63 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
     //     $scope.currentUser = null;
     //     $location.path('/login')
     // };
-});;app.directive('datatable', function($log) {
-
-    var initTable = function(element, content) {
+});;app.directive('datatable', function($log, $parse, $timeout) {
+    var dataTable;
+    var initTable = function(element, columns, content) {
+        content
         var options = {
-            aoColumns: [{
-                "sTitle": "分数"
-            }, {
-                "sTitle": "用时"
-            }, {
-                "sTitle": "名字"
-            }, {
-                "sTitle": "手机号"
-            }, {
-                "sTitle": "生日"
-            }],
-
+            aoColumns: columns,
             aaData: content
-
         };
-        element.dataTable(options);
+        dataTable = element.dataTable(options);
     };
     return {
         restrict: 'E',
         scope: {
-            content: '='
+            columns: '=',
+            content: '=',
+            ondelete: '&'
         },
         replace: true,
 
         template: function(element, attrs) {
-            $log.log('=======>template');
             var strVar = "";
-            strVar += "<table id='testgrid' class='datatable table table-striped table-bordered'>";
+            strVar += "<table class='datatable table table-striped table-bordered'>";
             strVar += "<\/table>";
             return strVar;
         },
 
-        link: function(scope, element) {
-
+        link: function(scope, element, attrs) {
+            $log.log('attrs: ', attrs);
+            var deleteFn = $parse(attrs['delete']);
+            $log.log(scope);
+            $log.log('Delete fn is ', deleteFn);
+            var columns = scope.columns;
 
             scope.$watch('content', function(content) {
                 $log.log('content is ', scope.content);
                 if (scope.content) {
                     if (!scope.inited) {
-                        initTable(element, content);
+                        initTable(element, columns, content);
+                        // $log.log('Delete btns are: ', element.find('.btn-delete'));
+
                         scope.inited = true;
+                        element.delegate('.btn-delete', 'click', function(e) {
+                            // console.log('clicked ', $(e.currentTarget).attr('qid'));
+                            // var row = element.find('tr').has($(e.currentTarget));
+
+                            var qid = $(e.currentTarget).attr('qid');
+                            scope.ondelete({
+                                qid: qid
+                            });
+                        });
                     }
+
+
                 }
             });
-
-
-
         }
-    }
+    };
 });
 
 app.directive('ckeditor', function($log) {
@@ -21500,27 +21515,87 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             method: 'GET'
         }
     });
+    $scope.questions = [];
+    $scope.pagedQuestions = [];
+    $scope.questionSize = 0;
+    $scope.selectedItems = [];
+    $scope.selectedItem = {
+        options: [],
+        rightAnswer: []
+    };
+    $scope.selectedOption = null;
+    $scope.$watch('selectedItems', function(newVal) {
+
+        if (newVal && newVal[0]) {
+            $scope.selectedItem = newVal[0];
+        }
+    }, true);
+    // $scope.columnData = [{
+    //     sTitle: "问题"
+    // }, {
+    //     bSortable: false,
+    //     sClass: "center",
+    //     mRender: function(data, type, row) {
+    //         // $log.log('row data is', data);
+    //         return '<button type="button" class="btn btn-default btn-delete" qid="' + data + '"><i class="fa fa-times"></i></button>';
+    //     }
+    // }];
+    $scope.pagingOptions = {
+        // pageSizes: list of available page sizes.
+        pageSizes: [10, 20, 50],
+        //pageSize: currently selected page size. 
+        pageSize: 10,
+        //currentPage: the uhm... current page.
+        currentPage: 1
+    };
+    $scope.dataOptions = {
+        data: 'pagedQuestions',
+        columnDefs: [{
+            field: 'name',
+            displayName: '题目'
+        }, {
+            displayName: '',
+            width: 50,
+            cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"> <button type="button" class="btn btn-default" ng-click="delete(item)" ng-confirm-click="是否要删除{{item.name}}？"><i class="fa fa-times"></i></button></div>'
+        }],
+        rowHeight: 45,
+        selectedItems: $scope.selectedItems,
+        totalServerItems: 'totalServerItems',
+        pagingOptions: $scope.pagingOptions,
+        enablePaging: true,
+        showFooter: true,
+        multiSelect: false,
+    };
+
+    $scope.$watch('pagingOptions', function(newVal, oldVal) {
+        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+            // $scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage
+            var start = ($scope.pagingOptions.currentPage - 1) * $scope.pagingOptions.pageSize;
+            $log.log('====> start is ', start);
+            $scope.pagedQuestions = $scope.questions.slice(start, start + $scope.pagingOptions.pageSize);
+            $log.log('====> pageQuestions is ', $scope.pagedQuestions);
+            $scope.totalServerItems = $scope.questions.length;
+        }
+    }, true);
+
 
     $scope.query = function() {
         Question.query({
             qsId: $routeParams['qsId']
         }, function(data) {
-            $log.log('result is ', data);
+            $log.log('result is ', data.result);
             $scope.questions = data.result;
-            if ($scope.questions.length > 0) {
-                $scope.selectedItem = $scope.questions[0];
-            } else {
-                $scope.selectedItem = {
-                    options: [],
-                    rightAnswer: []
-                };
-                $scope.selectedOption = null;
-            }
-
+            $scope.selectedItem = $scope.questions[0];
+            $scope.totalServerItems = $scope.questions.length;
+            // $scope.aaQuestionData = data.result.map(function(q) {
+            //     return [q.name, q.id];
+            // });
+            var start = ($scope.pagingOptions.currentPage - 1) * $scope.pagingOptions.pageSize;
+            $scope.pagedQuestions = $scope.questions.slice(start, $scope.pagingOptions.pageSize);
+            // $log.log($scope.aaQuestionData);
         });
     };
     $scope.query();
-
 
     $scope.select = function(item) {
         $scope.selectedItem = item;
@@ -21613,10 +21688,11 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
     };
 
     $scope.delete = function(item) {
-        Question.delete(item, function() {
+        Question.delete($scope.selectedItem, function() {
             $scope.query();
         });
     };
+
     $scope.submit = function(item) {
         $log.log('submit question.', item);
         if (!item.rightAnswer || item.rightAnswer.length <= 0) {
@@ -21629,7 +21705,6 @@ app.controller('QuestionSetCtrl', function($scope, $resource, $log, $timeout, $l
             $scope.query();
         });
     };
-
 });;app.controller('EditCtrl', function($scope, $rootScope, $log, Parse, Status, ArticleEvent) {
     $log.log('EditCtrl');
     var defaultImageUrl = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
@@ -21947,13 +22022,24 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
         });
     });
 
+    $scope.columnData = [{
+        "sTitle": "分数"
+    }, {
+        "sTitle": "用时"
+    }, {
+        "sTitle": "名字"
+    }, {
+        "sTitle": "手机号"
+    }, {
+        "sTitle": "生日"
+    }];
+
     $scope.$watch('selectedQuiz', function(quizcode) {
         if (!quizcode) {
             return;
         }
         $.get('/quiz/mvc/quizresults/' + quizcode).done(function(data) {
             $scope.$apply(function() {
-
                 $scope.mydata = data.result;
             });
 

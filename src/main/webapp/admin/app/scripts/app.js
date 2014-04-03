@@ -1,4 +1,4 @@
-var app = angular.module('quizAdmin', ['ngRoute', 'ngResource', 'angularFileUpload']);
+var app = angular.module('quizAdmin', ['ngRoute', 'ngResource', 'angularFileUpload', 'ngGrid']);
 
 app.constant('TPL_PATH', 'templates');
 app.constant('UserEvent', 'UserEvent');

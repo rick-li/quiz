@@ -1,56 +1,60 @@
-app.directive('datatable', function($log) {
-
-    var initTable = function(element, content) {
+app.directive('datatable', function($log, $parse, $timeout) {
+    var dataTable;
+    var initTable = function(element, columns, content) {
+        content
         var options = {
-            aoColumns: [{
-                "sTitle": "分数"
-            }, {
-                "sTitle": "用时"
-            }, {
-                "sTitle": "名字"
-            }, {
-                "sTitle": "手机号"
-            }, {
-                "sTitle": "生日"
-            }],
-
+            aoColumns: columns,
             aaData: content
-
         };
-        element.dataTable(options);
+        dataTable = element.dataTable(options);
     };
     return {
         restrict: 'E',
         scope: {
-            content: '='
+            columns: '=',
+            content: '=',
+            ondelete: '&'
         },
         replace: true,
 
         template: function(element, attrs) {
-            $log.log('=======>template');
             var strVar = "";
-            strVar += "<table id='testgrid' class='datatable table table-striped table-bordered'>";
+            strVar += "<table class='datatable table table-striped table-bordered'>";
             strVar += "<\/table>";
             return strVar;
         },
 
-        link: function(scope, element) {
-
+        link: function(scope, element, attrs) {
+            $log.log('attrs: ', attrs);
+            var deleteFn = $parse(attrs['delete']);
+            $log.log(scope);
+            $log.log('Delete fn is ', deleteFn);
+            var columns = scope.columns;
 
             scope.$watch('content', function(content) {
                 $log.log('content is ', scope.content);
                 if (scope.content) {
                     if (!scope.inited) {
-                        initTable(element, content);
+                        initTable(element, columns, content);
+                        // $log.log('Delete btns are: ', element.find('.btn-delete'));
+
                         scope.inited = true;
+                        element.delegate('.btn-delete', 'click', function(e) {
+                            // console.log('clicked ', $(e.currentTarget).attr('qid'));
+                            // var row = element.find('tr').has($(e.currentTarget));
+
+                            var qid = $(e.currentTarget).attr('qid');
+                            scope.ondelete({
+                                qid: qid
+                            });
+                        });
                     }
+
+
                 }
             });
-
-
-
         }
-    }
+    };
 });
 
 app.directive('ckeditor', function($log) {
