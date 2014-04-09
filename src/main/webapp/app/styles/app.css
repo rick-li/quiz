@@ -57,9 +57,12 @@ table {
  form input.error {
   border: solid 1px red;
 }
+form .required {
+  color: red;
+}
 .register-wrapper {
-  margin: 0 auto;
-  text-align: center;
+  margin-left: 37%;
+  text-align: left;
 }
 .register-wrapper .register-field {
   height: 40px;
@@ -205,5 +208,9 @@ table {
   #content {
     min-height: 100%;
     padding: 0 10px 10px 10px;
+  }
+  .register-wrapper {
+    margin-left: 15%;
+    text-align: left;
   }
 }

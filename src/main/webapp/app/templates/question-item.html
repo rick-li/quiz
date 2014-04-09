@@ -1,21 +1,23 @@
 <div class="question-name">
-    <%=idx+1%>:
-        <%=question.name%>
+  <%=idx+1%>:
+    <%=question.name%>
 </div>
 <div class="question-desc">
-    <%=question.desc%>
+  <%=question.desc%>
 </div>
 <div class="<%=getImageStyle(question)%>">
+  <%if(question.imageFileName){%>
     <img src="/quiz/mvc/images/<%=question.imageFileName%>" />
+    <%}%>
 </div>
 <div class="question-options">
-    <%_.each(question.options, function(option){%>
-        <div class="option">
-            <input name="option" type="radio" value="<%=option%>" <% console.log(question.userAnswers); if(question.userAnswers && option===question.userAnswers[0]){%>checked
-            <%}%>>
-                <span>
-                    <%=option%>
-                </span>
-        </div>
-        <%});%>
+  <%_.each(question.options, function(option){%>
+    <div class="option">
+      <input name="option" type="radio" value="<%=option%>" <% console.log(question.userAnswers); if(question.userAnswers && option===question.userAnswers[0]){%>checked
+      <%}%>>
+        <span>
+          <%=option%>
+        </span>
+    </div>
+    <%});%>
 </div>

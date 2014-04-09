@@ -1,39 +1,42 @@
 <form name="register">
-    <div class="register-wrapper">
-        <div>
-            <% _.each(formFields, function(field){ if(field.type==='gender' ){%>
+  <div class="register-wrapper">
+    <div>
+      <% _.each(formFields, function(field){ if(field.type==='gender' ){%>
 
-                <div class="register-field">
-                    <label>
-                        <%=field.name%>：</label>
-                    <select name="<%=field.type%>" id="">
-                        <option value="男">男</option>
-                        <option value="女">女</option>
-                    </select>
-                </div>
-                <span>*</span>
-
-                <%}else{%>
-
-                    <div class="register-field">
-                        <label>
-                            <%=field.name%>：</label>
-                        <input name="<%=field.type%>" type="text" />
-                    </div>
-
-                    <%} }); %>
-                        <div class="capcha">
-                            <div class="register-field">
-                                <label>验证码：</label>
-                                <input name="capcha-input" class="capcha-input" type="text" />
-
-                            </div>
-                            <image src="/quiz/mvc/user/capcha.png" class="capcha-image" />
-                            <span class="capcha-change-btn">看不清？换一个</span>
-                        </div>
+        <div class="register-field">
+          <label>
+            <%=field.name%>：</label>
+          <select name="<%=field.type%>" id="">
+            <option value="男">男</option>
+            <option value="女">女</option>
+          </select>
         </div>
+        <span>*</span>
 
+        <%}else{%>
+
+          <div class="register-field">
+            <label>
+              <%=field.name%>：</label>
+            <input name="<%=field.type%>" type="text" />
+            <% if(field.required){%>
+              <span class="required">*</span>
+              <%}%>
+          </div>
+
+          <%} }); %>
+            <div class="capcha">
+              <div class="register-field">
+                <label>验证码：</label>
+                <input name="capcha-input" class="capcha-input" type="text" />
+                <span class="required">*</span>
+              </div>
+              <image src="/quiz/mvc/user/capcha.png" class="capcha-image" />
+              <span class="capcha-change-btn">看不清？换一个</span>
+            </div>
     </div>
-    <div class="pageSwitcher"> <a id="submitBtn" href="javascript:void(0)">>>>>>>开始计时答题</a>
-    </div>
+
+  </div>
+  <div class="pageSwitcher"> <a id="submitBtn" href="javascript:void(0)">>>>>>>开始计时答题</a>
+  </div>
 </form>

@@ -50,6 +50,7 @@ public class UserController {
 	private static final String CAPCHA_KEY = "capcha";
 	private static final String QUIZ_QUESTIONS_CACHE_KEY = "quizQuestionCacheKey";
 	private static final String USER_QUIZ_RESULT_MAP_KEY = "userQuizResultMapKey";
+	private static final String REGISTERED_QUIZ = "registered_quiz";
 
 	static {
 		HTTP_HEADERS = new HttpHeaders();
@@ -85,7 +86,12 @@ public class UserController {
 
 		Result r = new Result();
 		r.setStatus(Status.SUCCESS);
-
+		List<String> registeredQuiz = (List<String>) session
+				.getAttribute(REGISTERED_QUIZ);
+		if (registeredQuiz == null || !registeredQuiz.contains(quizCode)) {
+			r.setStatus(Status.FAIL);
+			r.setMessage("not registered");
+		}
 		List<Question> questionResult = Lists.newArrayList();
 		if (session.getAttribute(QUIZ_QUESTIONS_CACHE_KEY) == null) {
 			session.setAttribute(QUIZ_QUESTIONS_CACHE_KEY, Maps.newHashMap());
@@ -202,6 +208,7 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public Result register(HttpSession session,
 			@RequestBody Map<String, String> userInfo) {
+		String quizCode = userInfo.get("quizCode");
 		Result r = new Result(Status.SUCCESS);
 		if (!isCapchaValid(session, userInfo)) {
 			r.setStatus(Status.FAIL);
@@ -214,7 +221,16 @@ public class UserController {
 			r.setMessage("您已参与过本次测试，请勿重复");
 			return r;
 		}
-
+		@SuppressWarnings("unchecked")
+		List<String> registeredQuizList = (List<String>) session
+				.getAttribute(REGISTERED_QUIZ);
+		if (registeredQuizList == null) {
+			registeredQuizList = Lists.newArrayList();
+		}
+		if (!registeredQuizList.contains(quizCode)) {
+			registeredQuizList.add(quizCode);
+		}
+		session.setAttribute(REGISTERED_QUIZ, registeredQuizList);
 		User user = new User();
 		user.setUserInfo(userInfo);
 		user.setPhonenum(userInfo.get("phonenum"));
