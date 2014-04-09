@@ -1,5 +1,6 @@
 define(function(require, exports) {
   exports.render = function(tpl, quiz) {
+    var isDebug = $.deparam.querystring()['debug'];
     var userTpl = $('#register');
     var content = tpl(quiz);
 
@@ -16,10 +17,17 @@ define(function(require, exports) {
     $('[name=birthday]').datepicker({
       defaultDate: '-10y'
     });
-    $('.capcha-image, .capcha-change-btn').on('click', function() {
+
+    $('.capcha-image,.capcha-change-btn').on('click', function() {
+      if (isDebug) {
+        alert('已点击验证码');
+      }
       console.log('click capcha image.');
-      var capSrc = $('.capcha-image').attr('src');
+      var capSrc = $('.capcha-image').attr('data-src') + '?' + new Date().getTime();
       $('.capcha-image').attr('src', capSrc);
+      if (isDebug) {
+        alert('已重载验证码');
+      }
     });
 
     $('#submitBtn').on('click', function() {
