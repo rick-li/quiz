@@ -2,65 +2,66 @@
 <html lang="zh-cn">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no">
-    <title>Quiz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title>Quiz</title>
 
-    <link rel="stylesheet" href="styles/app.css">
+  <link rel="stylesheet" href="styles/app.css">
 
-    <link rel="stylesheet" href="lib/jquery-ui.css">
-    <link rel="stylesheet" href="lib/jquery.ui.datepicker.css">
+  <link rel="stylesheet" href="lib/jquery-ui.css">
+  <link rel="stylesheet" href="lib/jquery.ui.datepicker.css">
 
 
 </head>
 
 <body>
-    <div id="container">
-        <div id="header">
-            <div class="header-logo"></div>
-            <div class="header-title"></div>
-        </div>
-        <div id="content">
+  <div id="container">
+    <div id="header">
+      <div class="header-logo"></div>
 
-
-        </div>
-        <div id="footer">
-            <div class="footer-logo"></div>
-        </div>
     </div>
-    <!--[if lte IE 8 ]> <html lang="en"> 
+    <div class="header-title"></div>
+    <div id="content">
+
+
+    </div>
+    <div id="footer">
+      <div class="footer-logo"></div>
+    </div>
+  </div>
+  <!--[if lte IE 8 ]> <html lang="en"> 
     <script src="lib/json3.min.js"></script>
     <![endif]-->
 
 
 
-    <script>
-    //polyfill console
-    if (typeof console === 'undefined') {
-        window.console = {
-            log: function() {}
-        };
-    }
-    // //polyfill curry
-    Function.prototype.curry = function() {
-        var fn = this,
-            args = Array.prototype.slice.call(arguments);
-        return function() {
-            return fn.apply(this, args.concat(
-                Array.prototype.slice.call(arguments)));
-        };
+  <script>
+  //polyfill console
+  if (typeof console === 'undefined') {
+    window.console = {
+      log: function() {}
     };
-    </script>
+  }
+  // //polyfill curry
+  Function.prototype.curry = function() {
+    var fn = this,
+      args = Array.prototype.slice.call(arguments);
+    return function() {
+      return fn.apply(this, args.concat(
+        Array.prototype.slice.call(arguments)));
+    };
+  };
+  </script>
 
-    <script data-main="scripts/main" src="lib/require.js"></script>
+  <script data-main="scripts/main" src="lib/require.js"></script>
 
 
-    <!--<script src="lib/jquery-ui/ui/jquery.ui.core.js"></script>
+  <!--<script src="lib/jquery-ui/ui/jquery.ui.core.js"></script>
     <script src="lib/jquery-ui/ui/jquery.ui.widget.js"></script>
     <script src="lib/jquery-ui/ui/jquery.ui.datepicker.js"></script>
     
     -->
-    <script src="//localhost:7777/livereload.js"></script>
+  <script src="//localhost:7777/livereload.js"></script>
 
 </body>
 
