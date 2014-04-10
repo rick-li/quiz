@@ -21342,102 +21342,105 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
     //     $location.path('/login')
     // };
 });;app.directive('datatable', function($log, $parse, $timeout) {
-    var dataTable;
-    var initTable = function(element, columns, content) {
-        content
-        var options = {
-            aoColumns: columns,
-            aaData: content
-        };
-        dataTable = element.dataTable(options);
+  var dataTable;
+  var initTable = function(element, columns, content) {
+    content
+    var options = {
+      aoColumns: columns,
+      aaData: content
     };
-    return {
-        restrict: 'E',
-        scope: {
-            columns: '=',
-            content: '=',
-            ondelete: '&'
-        },
-        replace: true,
+    dataTable = element.dataTable(options);
+  };
+  return {
+    restrict: 'E',
+    scope: {
+      columns: '=',
+      content: '=',
+      ondelete: '&'
+    },
+    replace: true,
 
-        template: function(element, attrs) {
-            var strVar = "";
-            strVar += "<table class='datatable table table-striped table-bordered'>";
-            strVar += "<\/table>";
-            return strVar;
-        },
+    template: function(element, attrs) {
+      var strVar = "";
+      strVar += "<table class='datatable table table-striped table-bordered'>";
+      strVar += "<\/table>";
+      return strVar;
+    },
 
-        link: function(scope, element, attrs) {
-            $log.log('attrs: ', attrs);
-            var deleteFn = $parse(attrs['delete']);
-            $log.log(scope);
-            $log.log('Delete fn is ', deleteFn);
-            var columns = scope.columns;
+    link: function(scope, element, attrs) {
+      $log.log('attrs: ', attrs);
+      var deleteFn = $parse(attrs['delete']);
+      $log.log(scope);
+      $log.log('Delete fn is ', deleteFn);
+      var columns = scope.columns;
 
-            scope.$watch('content', function(content) {
-                $log.log('content is ', scope.content);
-                if (scope.content) {
-                    if (!scope.inited) {
-                        initTable(element, columns, content);
-                        // $log.log('Delete btns are: ', element.find('.btn-delete'));
+      scope.$watch('content', function(content) {
+        $log.log('content is ', scope.content);
+        if (scope.content) {
+          if (!scope.inited) {
+            initTable(element, columns, content);
+            // $log.log('Delete btns are: ', element.find('.btn-delete'));
 
-                        scope.inited = true;
-                        element.delegate('.btn-delete', 'click', function(e) {
-                            // console.log('clicked ', $(e.currentTarget).attr('qid'));
-                            // var row = element.find('tr').has($(e.currentTarget));
+            scope.inited = true;
+            element.delegate('.btn-delete', 'click', function(e) {
+              // console.log('clicked ', $(e.currentTarget).attr('qid'));
+              // var row = element.find('tr').has($(e.currentTarget));
 
-                            var qid = $(e.currentTarget).attr('qid');
-                            scope.ondelete({
-                                qid: qid
-                            });
-                        });
-                    }
-
-
-                }
+              var qid = $(e.currentTarget).attr('qid');
+              scope.ondelete({
+                qid: qid
+              });
             });
+          }
+
+
         }
-    };
+      });
+    }
+  };
 });
 
 app.directive('ckeditor', function($log) {
-    return {
-        restrict: 'E',
-        scope: {
-            content: '=',
-            ckheight: '@'
-        },
-        link: function(scope, elm, attr) {
+  return {
+    restrict: 'E',
+    scope: {
+      content: '=',
+      ckheight: '@'
+    },
+    link: function(scope, elm, attr) {
 
-            $log.log('attr is ', attr);
+      $log.log('attr is ', attr);
 
-            var ck = CKEDITOR.replace(elm[0], {
-                height: attr['ckheight'],
-                language: 'zh-cn'
-            });
+      var ck = CKEDITOR.replace(elm[0], {
+        height: attr['ckheight'],
+        language: 'zh-cn'
+      });
 
-            ck.on('instanceReady', function() {
-                ck.setData(scope.$apply('content'));
-                scope.$watch('content', function(newContent) {
-                    if (newContent !== ck.getData()) {
-                        $log.log('content changed, "', newContent, '"');
-                        ck.setData(newContent);
-                    }
-                });
+      ck.on('instanceReady', function() {
+        var cnt = scope.$apply('content');
+        $log.log('cnt is ', cnt);
+        ck.setData(cnt);
+        scope.$watch('content', function(newContent) {
+          if (newContent !== ck.getData()) {
+            $log.log('content changed, "', newContent, '"');
+            ck.setData(newContent);
+          }
+        });
 
-                ck.on('change', updateModel);
-                ck.on('key', updateModel);
+        ck.on('change', updateModel);
+        ck.on('key', updateModel);
 
-            });
+      });
 
 
-            function updateModel() {
-                scope.$apply(function() {
-                    scope.content = ck.getData();
-                });
-            }
-        }
-    };
+      function updateModel() {
+        console.log('ckeditor content changed.');
+        scope.$apply(function() {
+          scope.content = ck.getData();
+        });
+      }
+    }
+  };
 });;app.service('QuestionSetService', function($log, $resource) {
     var QuestionSet = $resource('/quiz/mvc/questionsets/:id', {
         id: '@id'
@@ -21807,194 +21810,198 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
     }
 
 });;app.controller('QuizEditor', function($scope, $routeParams, $resource, $log, $timeout, $location, QuestionSetService, QuizService, FormTypeService, Status, MaskService) {
-    $log.log('======>quiz editor');
-    $scope.selectedFormField = {};
-    $scope.chosenFieldType = {};
+  $log.log('======>quiz editor');
+  $scope.selectedFormField = {};
+  $scope.chosenFieldType = {};
+  $scope.selectedQuestionSet = {};
+  $scope.remainQuestionSets = [];
+  $scope.remainFormFields = [];
+
+  var query = function() {
+    QuizService.get({
+      id: quizId
+    }, function(data) {
+
+      $scope.quiz = data.result;
+      calculateRemainFormFields();
+      calculateRemainQuestionSets();
+    });
+  };
+
+  var quizId = $routeParams.quizId;
+  if (quizId && quizId != 'new') {
+    query();
+  } else {
+    //new quiz;
+    $scope.quiz = {};
+  }
+
+
+
+  var calculateRemainFormFields = function() {
+    if (!$scope.quiz || !$scope.fieldTypes) {
+      return;
+    }
+
+    $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
+
+      var foundFormField = _.findWhere(result, {
+        id: formField.typeId
+      });
+      if (foundFormField) {
+        var idx = result.indexOf(foundFormField);
+        result.splice(idx, 1);
+      }
+      return result;
+    }, $scope.fieldTypes.slice());
+  };
+
+  var calculateRemainQuestionSets = function() {
+    if (!$scope.quiz || !$scope.questionSets) {
+      return;
+    }
+
+    $scope.remainQuestionSets = _.reduce($scope.quiz.questionSets, function function_name(result, qsAssc) {
+
+      var foundQs = _.findWhere(result, {
+        id: qsAssc.qs.id
+      });
+      if (foundQs) {
+        var idx = result.indexOf(foundQs);
+        result.splice(idx, 1);
+      }
+      return result;
+    }, $scope.questionSets.slice());
+
+  }
+
+  QuestionSetService.query(function(data) {
+
+    $scope.questionSets = data.result;
+    calculateRemainQuestionSets();
+  });
+
+  FormTypeService.query(function(data) {
+
+    $scope.fieldTypes = data.result;
+
+    calculateRemainFormFields();
+  });
+
+  $scope.addFormField = function(item) {
+    console.log(item);
+    $scope.quiz.formFields || ($scope.quiz.formFields = []);
+    if ($scope.quiz.formFields.indexOf(item) == -1) {
+      $scope.quiz.formFields.push({
+        required: false,
+        typeId: item.id,
+        name: item.name
+      });
+    }
+    calculateRemainFormFields();
+  };
+
+  $scope.setSelectedFormField = function(item) {
+    $scope.selectedFormField = item;
+  };
+
+  $scope.deleteFormField = function(item) {
+    var fields = $scope.quiz.formFields;
+    if (!fields) {
+      return;
+    }
+    var idx = fields.indexOf(item);
+    if (idx != -1) {
+      fields.splice(idx, 1);
+    }
+    calculateRemainFormFields();
+  };
+  var searchQs = function(item) {
+    var idx = -1;
+    angular.forEach($scope.quiz.questionSets, function(qset) {
+      if (qset && qset.qs) {
+        if (qset.qs.id === item.id) {
+          return idx;
+        }
+        idx++;
+      }
+    });
+    return -1;
+  }
+
+  $scope.setSelectedQuestionSet = function(item) {
+    $scope.selectedQuestionSet = item;
+  };
+
+  $scope.addQuestionSet = function(item) {
+    if (!item.percentage) {
+      alert("请输入百分比");
+      return;
+    }
+    $scope.quiz.questionSets || ($scope.quiz.questionSets = []);
+    if (searchQs(item.qs) == -1) {
+      $scope.quiz.questionSets.push(item);
+    }
     $scope.selectedQuestionSet = {};
-    $scope.remainQuestionSets = [];
-    $scope.remainFormFields = [];
+    calculateRemainQuestionSets();
+  };
 
-    var query = function() {
-        QuizService.get({
-            id: quizId
-        }, function(data) {
-
-            $scope.quiz = data.result;
-            calculateRemainFormFields();
-            calculateRemainQuestionSets();
-        });
-    };
-
-    var quizId = $routeParams.quizId;
-    if (quizId && quizId != 'new') {
-        query();
-    } else {
-        //new quiz;
-        $scope.quiz = {};
+  $scope.deleteQuestionSet = function(item) {
+    var qsets = $scope.quiz.questionSets;
+    if (!qsets) {
+      return;
     }
 
+    var idx = qsets.indexOf(item);
+    if (idx != -1) {
+      qsets.splice(idx, 1);
+    }
+    calculateRemainQuestionSets();
+  };
 
-
-    var calculateRemainFormFields = function() {
-        if (!$scope.quiz || !$scope.fieldTypes) {
-            return;
-        }
-
-        $scope.remainFormFields = _.reduce($scope.quiz.formFields, function function_name(result, formField) {
-
-            var foundFormField = _.findWhere(result, {
-                id: formField.typeId
-            });
-            if (foundFormField) {
-                var idx = result.indexOf(foundFormField);
-                result.splice(idx, 1);
-            }
-            return result;
-        }, $scope.fieldTypes.slice());
-    };
-
-    var calculateRemainQuestionSets = function() {
-        if (!$scope.quiz || !$scope.questionSets) {
-            return;
-        }
-
-        $scope.remainQuestionSets = _.reduce($scope.quiz.questionSets, function function_name(result, qsAssc) {
-
-            var foundQs = _.findWhere(result, {
-                id: qsAssc.qs.id
-            });
-            if (foundQs) {
-                var idx = result.indexOf(foundQs);
-                result.splice(idx, 1);
-            }
-            return result;
-        }, $scope.questionSets.slice());
-
+  var validatePercetage = function(item) {
+    if (!item.questionSets) {
+      return false;
     }
 
-    QuestionSetService.query(function(data) {
+    var sum = _.reduce(item.questionSets, function(result, qsAssc) {
+      if (qsAssc.qs) {
+        result += qsAssc.percentage;
+      }
+      return result;
 
-        $scope.questionSets = data.result;
-        calculateRemainQuestionSets();
+    }, 0);
+    $log.log('sum is ', sum)
+    if (sum != 100) {
+      alert("百分比相加应该是100.");
+      return false;
+    }
+    return true
+  };
+
+  // $scope.$watch('quiz.introduction', function(newVal, oldVal) {
+  //   $log.log('desc changed: ', newVal);
+  // });
+
+  $scope.submit = function(item) {
+    $log.log('submit quiz.', item);
+    if (!validatePercetage(item)) {
+      $log.log('percentage wrong, return.');
+      return;
+    }
+    QuizService.save(item, function(item) {
+      // debugger;
+      quizId = item.result;
+      query();
+      window.alert("成功保存");
+    }, function() {
+      $log.log('error');
     });
+  };
 
-    FormTypeService.query(function(data) {
-
-        $scope.fieldTypes = data.result;
-
-        calculateRemainFormFields();
-    });
-
-    $scope.addFormField = function(item) {
-        console.log(item);
-        $scope.quiz.formFields || ($scope.quiz.formFields = []);
-        if ($scope.quiz.formFields.indexOf(item) == -1) {
-            $scope.quiz.formFields.push({
-                required: false,
-                typeId: item.id,
-                name: item.name
-            });
-        }
-        calculateRemainFormFields();
-    };
-
-    $scope.setSelectedFormField = function(item) {
-        $scope.selectedFormField = item;
-    };
-
-    $scope.deleteFormField = function(item) {
-        var fields = $scope.quiz.formFields;
-        if (!fields) {
-            return;
-        }
-        var idx = fields.indexOf(item);
-        if (idx != -1) {
-            fields.splice(idx, 1);
-        }
-        calculateRemainFormFields();
-    };
-    var searchQs = function(item) {
-        var idx = -1;
-        angular.forEach($scope.quiz.questionSets, function(qset) {
-            if (qset && qset.qs) {
-                if (qset.qs.id === item.id) {
-                    return idx;
-                }
-                idx++;
-            }
-        });
-        return -1;
-    }
-
-    $scope.setSelectedQuestionSet = function(item) {
-        $scope.selectedQuestionSet = item;
-    };
-
-    $scope.addQuestionSet = function(item) {
-        if (!item.percentage) {
-            alert("请输入百分比");
-            return;
-        }
-        $scope.quiz.questionSets || ($scope.quiz.questionSets = []);
-        if (searchQs(item.qs) == -1) {
-            $scope.quiz.questionSets.push(item);
-        }
-        $scope.selectedQuestionSet = {};
-        calculateRemainQuestionSets();
-    };
-
-    $scope.deleteQuestionSet = function(item) {
-        var qsets = $scope.quiz.questionSets;
-        if (!qsets) {
-            return;
-        }
-
-        var idx = qsets.indexOf(item);
-        if (idx != -1) {
-            qsets.splice(idx, 1);
-        }
-        calculateRemainQuestionSets();
-    };
-
-    var validatePercetage = function(item) {
-        if (!item.questionSets) {
-            return false;
-        }
-
-        var sum = _.reduce(item.questionSets, function(result, qsAssc) {
-            if (qsAssc.qs) {
-                result += qsAssc.percentage;
-            }
-            return result;
-
-        }, 0);
-        $log.log('sum is ', sum)
-        if (sum != 100) {
-            alert("百分比相加应该是100.");
-            return false;
-        }
-        return true
-    };
-
-
-    $scope.submit = function(item) {
-        $log.log('submit quiz.', item);
-        if (!validatePercetage(item)) {
-            return;
-        }
-        QuizService.save(item, function(item) {
-            // debugger;
-            quizId = item.result;
-            query();
-            window.alert("成功保存");
-        }, function() {
-            $log.log('error');
-        });
-    };
-
-    $scope.cancel = function() {
-        $location.path('/quizs');
-    }
+  $scope.cancel = function() {
+    $location.path('/quizs');
+  }
 });;app.controller('QuizResultsCtrl', function($scope, $log, $location) {
     // $log.log('in results ctrl');
 
