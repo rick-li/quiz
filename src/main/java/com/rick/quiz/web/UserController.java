@@ -86,9 +86,10 @@ public class UserController {
 
 		Result r = new Result();
 		r.setStatus(Status.SUCCESS);
-		List<String> registeredQuiz = (List<String>) session
-				.getAttribute(REGISTERED_QUIZ);
-		if (registeredQuiz == null || !registeredQuiz.contains(quizCode)) {
+		String registeredQuiz = (String) session.getAttribute(REGISTERED_QUIZ);
+
+		if (registeredQuiz == null
+				|| !registeredQuiz.equalsIgnoreCase(quizCode)) {
 			r.setStatus(Status.FAIL);
 			r.setMessage("not registered");
 		}
@@ -221,22 +222,22 @@ public class UserController {
 			r.setMessage("您已参与过本次测试，请勿重复");
 			return r;
 		}
-		@SuppressWarnings("unchecked")
-		List<String> registeredQuizList = (List<String>) session
-				.getAttribute(REGISTERED_QUIZ);
-		if (registeredQuizList == null) {
-			registeredQuizList = Lists.newArrayList();
-		}
-		if (!registeredQuizList.contains(quizCode)) {
-			registeredQuizList.add(quizCode);
-		}
-		session.setAttribute(REGISTERED_QUIZ, registeredQuizList);
+
+		clearQuestionCacheForEveryRegisteration(session);
+
+		session.setAttribute(REGISTERED_QUIZ, quizCode);
+
 		User user = new User();
 		user.setUserInfo(userInfo);
 		user.setPhonenum(userInfo.get("phonenum"));
 		userRepo.save(user);
 		session.setAttribute(USER_INFO, user);
 		return r;
+	}
+
+	private void clearQuestionCacheForEveryRegisteration(HttpSession session) {
+		// clear
+		session.setAttribute(QUIZ_QUESTIONS_CACHE_KEY, null);
 	}
 
 	private boolean isUniqueUser(Map<String, String> userInfo) {
