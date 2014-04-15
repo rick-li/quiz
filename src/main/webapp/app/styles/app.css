@@ -97,6 +97,9 @@ form .required {
   padding: 15px 0;
   text-align: left;
 }
+.question-desc {
+  text-align: left;
+}
 .question-options {
   margin: 20px 0px 30px 30%;
   text-align: left;
