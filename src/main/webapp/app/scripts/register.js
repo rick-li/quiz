@@ -80,18 +80,32 @@ define(function(require, exports) {
         alert(errorMsg);
       }
 
-      result = checkMobile();
+      result = validatePhone();
 
       return result;
     }
 
-    function checkMobile() {
+    function validatePhone() {
       var num = $('input[name=phonenum]').val();
-      if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(num))) {
-        alert("不是正确的手机号");
+
+      if (num.length == 11) {
+        if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(num))) {
+          alert("不是正确的手机号");
+          $('input[name=phonenum]').focus();
+          return false;
+        }
+      } else if (num.length == 8) {
+        if (!/^\d{8}$/.test(num)) {
+          alert("不是正确的电话号码");
+          $('input[name=phonenum]').focus();
+          return false;
+        }
+      } else {
+        alert("不是正确的电话号码");
         $('input[name=phonenum]').focus();
         return false;
       }
+
       return true;
     }
 
