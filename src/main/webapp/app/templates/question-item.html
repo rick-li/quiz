@@ -15,9 +15,12 @@
     <div class="option">
       <input name="option" type="radio" value="<%=option%>" <% console.log(question.userAnswers); if(question.userAnswers && option===question.userAnswers[0]){%>checked
       <%}%>>
-        <span>
+        <div class="option-content">
+
           <%=option%>
-        </span>
+
+        </div>
+        <div class="clear" />
     </div>
     <%});%>
 </div>
