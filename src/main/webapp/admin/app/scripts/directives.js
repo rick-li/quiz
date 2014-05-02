@@ -1,7 +1,7 @@
 app.directive('datatable', function($log, $parse, $timeout) {
   var dataTable;
   var initTable = function(element, columns, content) {
-    content
+
     var options = {
       aoColumns: columns,
       aaData: content
@@ -29,29 +29,35 @@ app.directive('datatable', function($log, $parse, $timeout) {
       var deleteFn = $parse(attrs['delete']);
       $log.log(scope);
       $log.log('Delete fn is ', deleteFn);
-      var columns = scope.columns;
+
 
       scope.$watch('content', function(content) {
-        $log.log('content is ', scope.content);
-        if (scope.content) {
-          if (!scope.inited) {
-            initTable(element, columns, content);
-            // $log.log('Delete btns are: ', element.find('.btn-delete'));
+        $log.log('in directive content is ', scope.content);
+        $log.log('in directive columns is ', scope.columns);
+        if (scope.content !== undefined) {
 
-            scope.inited = true;
-            element.delegate('.btn-delete', 'click', function(e) {
-              // console.log('clicked ', $(e.currentTarget).attr('qid'));
-              // var row = element.find('tr').has($(e.currentTarget));
-
-              var qid = $(e.currentTarget).attr('qid');
-              scope.ondelete({
-                qid: qid
-              });
-            });
+          if (scope.inited && scope.content.length === 0) {
+            dataTable.fnClearTable();
+            return;
           }
 
+          var columns = scope.columns;
+          initTable(element, columns, content);
+          // $log.log('Delete btns are: ', element.find('.btn-delete'));
+
+          scope.inited = true;
+          element.delegate('.btn-delete', 'click', function(e) {
+            // console.log('clicked ', $(e.currentTarget).attr('qid'));
+            // var row = element.find('tr').has($(e.currentTarget));
+
+            var qid = $(e.currentTarget).attr('qid');
+            scope.ondelete({
+              qid: qid
+            });
+          });
 
         }
+
       });
     }
   };

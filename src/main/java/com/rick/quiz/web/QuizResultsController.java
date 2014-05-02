@@ -2,7 +2,6 @@ package com.rick.quiz.web;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.rick.quiz.data.model.Quiz;
-import com.rick.quiz.data.model.User;
 import com.rick.quiz.data.model.UserQuiz;
 import com.rick.quiz.data.repo.QuizRepo;
 import com.rick.quiz.data.repo.UserQuizRepo;
@@ -58,53 +55,53 @@ public class QuizResultsController {
 		Result r = new Result(Result.Status.SUCCESS);
 		List<UserQuiz> userQuizList = userQuizRepo.findByQuizCode(quizCode);
 
-		List<List<String>> aaData = Lists.newArrayList(FluentIterable.from(
-				userQuizList).transform(new Function<UserQuiz, List<String>>() {
-
-			@Override
-			public List<String> apply(UserQuiz userQuiz) {
-				List<String> result = Lists.newArrayList();
-				result.add((int) (userQuiz.getScore() * 100) + "");
-				int seconds = userQuiz.getSecondsUsed();
-
-				int day = (int) TimeUnit.SECONDS.toDays(seconds);
-				Long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
-				Long minute = TimeUnit.SECONDS.toMinutes(seconds)
-						- (TimeUnit.SECONDS.toHours(seconds) * 60);
-				Long second = TimeUnit.SECONDS.toSeconds(seconds)
-						- (TimeUnit.SECONDS.toMinutes(seconds) * 60);
-				String strTime = "";
-				if (hours > 0) {
-					strTime += hours < 10 ? "0" + hours : hours.toString();
-					strTime += ":";
-				}
-				if (minute > 0) {
-					strTime += minute < 10 ? "0" + minute : minute.toString();
-					strTime += ":";
-				} else {
-					strTime += "00";
-					strTime += ":";
-				}
-				if (second > 0) {
-					strTime += second < 10 ? "0" + second : second.toString();
-				} else {
-					strTime += "00";
-				}
-
-				result.add(strTime);
-				User user = userQuiz.getUser();
-
-				result.add(user != null ? user.getUserInfo().get("name") : "");
-				result.add(user != null ? user.getUserInfo().get("phonenum")
-						: "");
-				result.add(user != null ? user.getUserInfo().get("birthday")
-						: "");
-				result.add(user != null ? user.getUserInfo().get("gender") : "");
-
-				return result;
-			}
-		}));
-		r.setResult(aaData);
+		// List<List<String>> aaData = Lists.newArrayList(FluentIterable.from(
+		// userQuizList).transform(new Function<UserQuiz, List<String>>() {
+		//
+		// @Override
+		// public List<String> apply(UserQuiz userQuiz) {
+		// List<String> result = Lists.newArrayList();
+		// result.add((int) (userQuiz.getScore() * 100) + "");
+		// int seconds = userQuiz.getSecondsUsed();
+		//
+		// int day = (int) TimeUnit.SECONDS.toDays(seconds);
+		// Long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
+		// Long minute = TimeUnit.SECONDS.toMinutes(seconds)
+		// - (TimeUnit.SECONDS.toHours(seconds) * 60);
+		// Long second = TimeUnit.SECONDS.toSeconds(seconds)
+		// - (TimeUnit.SECONDS.toMinutes(seconds) * 60);
+		// String strTime = "";
+		// if (hours > 0) {
+		// strTime += hours < 10 ? "0" + hours : hours.toString();
+		// strTime += ":";
+		// }
+		// if (minute > 0) {
+		// strTime += minute < 10 ? "0" + minute : minute.toString();
+		// strTime += ":";
+		// } else {
+		// strTime += "00";
+		// strTime += ":";
+		// }
+		// if (second > 0) {
+		// strTime += second < 10 ? "0" + second : second.toString();
+		// } else {
+		// strTime += "00";
+		// }
+		//
+		// result.add(strTime);
+		// User user = userQuiz.getUser();
+		//
+		// result.add(user != null ? user.getUserInfo().get("name") : "");
+		// result.add(user != null ? user.getUserInfo().get("phonenum")
+		// : "");
+		// result.add(user != null ? user.getUserInfo().get("birthday")
+		// : "");
+		// result.add(user != null ? user.getUserInfo().get("gender") : "");
+		//
+		// return result;
+		// }
+		// }));
+		r.setResult(userQuizList);
 		return r;
 	}
 }
