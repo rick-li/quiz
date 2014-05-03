@@ -36,11 +36,17 @@ app.directive('datatable', function($log, $parse, $timeout) {
         $log.log('in directive columns is ', scope.columns);
         if (scope.content !== undefined) {
 
-          if (scope.inited && scope.content.length === 0) {
-            dataTable.fnClearTable();
+          if (scope.content.length === 0) {
+            if (scope.inited) {
+              dataTable.fnClearTable();
+            }
             return;
           }
 
+          if (dataTable) {
+            dataTable.fnDestroy();
+            dataTable = null;
+          }
           var columns = scope.columns;
           initTable(element, columns, content);
           // $log.log('Delete btns are: ', element.find('.btn-delete'));
