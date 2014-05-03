@@ -1,5 +1,7 @@
 app.controller('QuizResultsCtrl', function($scope, $log, $location) {
-  // $log.log('in results ctrl');
+
+  $scope.selectedQuiz = $location.search()['quiz'];
+  $log.log('in results ctrl, selected Quiz is ', $scope.selectedQuiz);
 
   $.when($.get('/quiz/mvc/quizresults/quizpairs'), $.get('/quiz/mvc/formfieldtype')).done(function(pairs, fields) {
     $scope.$apply(function() {
@@ -11,19 +13,21 @@ app.controller('QuizResultsCtrl', function($scope, $log, $location) {
       }, {});
 
       $log.log('quiz pairs is ', $scope.quizpairs, ' fields are ', $scope.fieldsMap);
-      if ($scope.quizpairs[0]) {
+      if (!$scope.selectedQuiz && $scope.quizpairs[0]) {
         $scope.selectedQuiz = $scope.quizpairs[0].code;
       }
     });
   });
-
-
 
   $scope.$watch('selectedQuiz', function(quizcode) {
     console.log('selected quizcode is ', quizcode);
     if (!quizcode) {
       return;
     }
+    if ($location.search('quiz') != quizcode) {
+      $location.search('quiz', quizcode);
+    }
+
     $.get('/quiz/mvc/quizresults/' + quizcode).done(function(data) {
       $scope.$apply(function() {
         $scope.quizRecords = data.result;
