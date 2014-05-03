@@ -15,7 +15,9 @@ define(function(require, exports) {
     });
     $('[name=birthday]').attr('readonly', true);
     $('[name=birthday]').datepicker({
-      defaultDate: '-10y'
+      defaultDate: '-10y',
+      changeYear: true,
+      changeMonth: true
     });
 
     $('.capcha-image,.capcha-change-btn').on('click', function() {
