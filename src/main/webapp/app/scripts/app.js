@@ -18,6 +18,18 @@ define(function(require, exports, module) {
     whenStageChange().then(getQuiz).then(handleStageChange).fail(handleError);
   });
 
+  //handle refresh
+  console.log('cookie is ', $.cookie('fromServer'));
+  if ($.cookie('fromServer')) {
+    $.cookie('fromServer', '');
+    if ($.deparam.fragment().stage == 'question') {
+      var fragArgs = {
+        stage: 'question',
+        idx: 0
+      };
+      window.location.hash = $.param(fragArgs);
+    }
+  }
   //initialize the app
   getQuiz().then(handleStageChange).fail(handleError);
 
