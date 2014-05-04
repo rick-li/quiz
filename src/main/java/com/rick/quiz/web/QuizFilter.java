@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class QuizFilter implements Filter {
@@ -21,11 +22,15 @@ public class QuizFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {
-
+		HttpServletRequest httpReq = (HttpServletRequest) req;
 		HttpServletResponse httpResp = (HttpServletResponse) resp;
 		// every time refresh, set fromServer cookie so client knows it
 		// refreshed.
-		httpResp.addCookie(new Cookie("fromServer", "true"));
+		String path = httpReq.getServletPath();
+		if ("/app/".equalsIgnoreCase(path) || "/app".equalsIgnoreCase(path)
+				|| "/app/index.html".equalsIgnoreCase(path)) {
+			httpResp.addCookie(new Cookie("fromServer", "true"));
+		}
 		chain.doFilter(req, resp);
 	}
 

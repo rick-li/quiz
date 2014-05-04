@@ -45,7 +45,7 @@
  
 	<filter-mapping>
 		<filter-name>QuizFilterChain</filter-name>
-		<url-pattern>/app/index.html</url-pattern>
+		<url-pattern>/app/*</url-pattern>
 	</filter-mapping>
 	
 	<!-- Spring Security -->
