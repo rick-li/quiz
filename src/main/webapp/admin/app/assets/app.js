@@ -23868,8 +23868,8 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
       scope.$watch('content', function(content) {
         $log.log('in directive content is ', scope.content);
         $log.log('in directive columns is ', scope.columns);
-        if (scope.content !== undefined) {
 
+        if (scope.content !== undefined) {
           if (scope.content.length === 0) {
             if (scope.inited) {
               dataTable.fnClearTable();
@@ -23879,8 +23879,9 @@ app.controller('NavCtrl', function($scope, $rootScope, $log, $location, UserEven
 
           if (dataTable) {
             dataTable.fnDestroy();
-            dataTable = null;
+            element.empty();
           }
+
           var columns = scope.columns;
           initTable(element, columns, content);
           // $log.log('Delete btns are: ', element.find('.btn-delete'));
@@ -24511,22 +24512,32 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
   $log.log('in results ctrl, selected Quiz is ', $scope.selectedQuiz);
 
   $.when($.get('/quiz/mvc/quizresults/quizpairs'), $.get('/quiz/mvc/formfieldtype')).done(function(pairs, fields) {
-    $scope.$apply(function() {
-      $scope.quizpairs = pairs[0].result;
 
-      $scope.fieldsMap = fields[0].result.reduce(function(map, field) {
-        map[field.type] = field;
-        return map;
-      }, {});
+    $scope.quizpairs = pairs[0].result;
 
-      $log.log('quiz pairs is ', $scope.quizpairs, ' fields are ', $scope.fieldsMap);
-      if (!$scope.selectedQuiz && $scope.quizpairs[0]) {
-        $scope.selectedQuiz = $scope.quizpairs[0].code;
-      }
+    $scope.fieldsMap = fields[0].result.reduce(function(map, field) {
+      map[field.type] = field;
+      return map;
+    }, {});
+
+    $log.log('quiz pairs is ', $scope.quizpairs, ' fields are ', $scope.fieldsMap);
+    // debugger;
+    if (!$scope.selectedQuiz && $scope.quizpairs[0]) {
+      $scope.selectedQuiz = $scope.quizpairs[0].code;
+      $log.log('===>getting selectedQuiz.');
+    }
+    $scope.$apply();
+
+    $log.log('===>start watching...');
+    onQuizChange($scope.selectedQuiz);
+    $scope.$watch('selectedQuiz', function(quizcode) {
+      onQuizChange(quizcode);
     });
+
+
   });
 
-  $scope.$watch('selectedQuiz', function(quizcode) {
+  var onQuizChange = function(quizcode) {
     console.log('selected quizcode is ', quizcode);
     if (!quizcode) {
       return;
@@ -24537,18 +24548,21 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
 
     $.get('/quiz/mvc/quizresults/' + quizcode).done(function(data) {
       $scope.$apply(function() {
+
         $scope.quizRecords = data.result;
         console.log('quizRecords is ', $scope.quizRecords);
         if ($scope.quizRecords.length != 0) {
           //moment(rec.secondsUsed).format('mm:ss')
           $scope.aaData = $scope.quizRecords.reduce(function(recordVos, rec) {
             var aa1 = [rec.score * 100, moment(rec.secondsUsed * 1000).format('mm:ss')];
-            var aa2 = Object.keys(rec.user.userInfo).filter(function(el) {
-              return (el !== 'capcha-input' && el !== 'quizCode');
-            }).map(function(el) {
-              return rec.user.userInfo[el];
-            });
-            recordVos.push(aa1.concat(aa2));
+            if (rec.user && rec.user.userInfo) {
+              var aa2 = Object.keys(rec.user.userInfo).filter(function(el) {
+                return (el !== 'capcha-input' && el !== 'quizCode');
+              }).map(function(el) {
+                return rec.user.userInfo[el];
+              });
+              recordVos.push(aa1.concat(aa2));
+            }
             return recordVos;
           }, []);
 
@@ -24573,14 +24587,10 @@ app.controller('QuizCtrl', function($scope, $resource, $log, $timeout, $location
           $scope.columnData = [];
           $scope.aaData = [];
         }
-
-
       });
 
     });
-
-  });
-
+  };
 });;app.service('FormTypeService', function($resource, $log) {
     var FieldType = $resource('/quiz/mvc/formfieldtype/:id', {
         id: '@id'
