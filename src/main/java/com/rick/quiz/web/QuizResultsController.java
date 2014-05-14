@@ -15,6 +15,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.rick.quiz.data.model.Quiz;
+import com.rick.quiz.data.model.UserQuestion;
 import com.rick.quiz.data.model.UserQuiz;
 import com.rick.quiz.data.repo.QuizRepo;
 import com.rick.quiz.data.repo.UserQuizRepo;
@@ -54,7 +55,10 @@ public class QuizResultsController {
 	public Result getUserQuizByQuizCode(@PathVariable String quizCode) {
 		Result r = new Result(Result.Status.SUCCESS);
 		List<UserQuiz> userQuizList = userQuizRepo.findByQuizCode(quizCode);
-
+		List<UserQuestion> emptyList = Lists.newArrayList();
+		for (UserQuiz uq : userQuizList) {
+			uq.setUserQuestions(emptyList);
+		}
 		// List<List<String>> aaData = Lists.newArrayList(FluentIterable.from(
 		// userQuizList).transform(new Function<UserQuiz, List<String>>() {
 		//
