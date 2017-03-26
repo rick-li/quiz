@@ -12,9 +12,23 @@
           </select>
           <span class="required">*</span>
         </div>
-
+        <%}else if(field.type === 'shanghai-district'){ %>
+          <div class="register-field">
+            <label>
+              上海区县：</label>
+            <select name="<%=field.type%>" id="">
+              
+            </select>
+          </div>
+        <%}else if(field.type === 'shanghai-street'){%> 
+          <div class="register-field">
+            <label>
+              上海街道：</label>
+            <select name="<%=field.type%>" id="">
+            
+            </select>
+          </div>
         <%}else{%>
-
           <div class="register-field">
             <label>
               <%=field.name%>：</label>
