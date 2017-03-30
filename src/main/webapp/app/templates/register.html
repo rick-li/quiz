@@ -15,7 +15,7 @@
         <%}else if(field.type === 'shanghai-district'){ %>
           <div class="register-field">
             <label>
-              上海区县：</label>
+              <%=field.name%>：</label>
             <select name="<%=field.type%>" id="">
               
             </select>
@@ -23,7 +23,7 @@
         <%}else if(field.type === 'shanghai-street'){%> 
           <div class="register-field">
             <label>
-              上海街道：</label>
+              <%=field.name%>：</label>
             <select name="<%=field.type%>" id="">
             
             </select>
