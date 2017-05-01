@@ -26,7 +26,7 @@ define(function(require, exports) {
     var content = tpl(quiz);
 
     $('#content').html(content);
-    $('.header-title').text(quiz.name);
+    $('.header-title').text('');
     $('.register-wrapper input').on('keydown', function(e) {
       var key = e.which;
       if (key == 13) {
