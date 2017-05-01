@@ -9,7 +9,7 @@ define(function(require, exports) {
     elapsed = 0;
     answers = []; //anwser = {question:question, answer: answer}
 
-    $('.header-title').text(quiz.name);
+    $('.header-title').text('');
 
     whenQuestionChange(function(idx) {
       currentIdx = idx;
